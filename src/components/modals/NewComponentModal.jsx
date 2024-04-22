@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { useComponentsContext } from '../../hooks/useComponents'
+import { useComponents } from '../../hooks/useComponents'
 import TextInput from '../ui/TextInput'
 import OutlineButton from '../ui/OutlineButton'
 import SolidButton from '../ui/SolidButton'
 import CharacteristicPropertyCheckbox from '../ui/CharacteristicPropertyCheckbox'
 
 const NewComponentModal = ({ newComponentType }) => {
-  const { addComponent } = useComponentsContext()
+  const { addComponent } = useComponents()
 
   const [isRead, setIsRead] = useState(false)
   const [isWrite, setIsWrite] = useState(false)
@@ -112,15 +112,17 @@ const NewComponentModal = ({ newComponentType }) => {
 
       <div className='mt-8 flex items-center justify-end space-x-2'>
         <OutlineButton
-          text='Cancel'
           onClick={() => document.getElementById('new_component_modal').close()}
-        />
+        >
+          Cancel
+        </OutlineButton>
 
         <SolidButton
-          text='Add'
           onClick={handleAddComponent}
           disabled={noPropsSelected || missingUuid}
-        />
+        >
+          Add
+        </SolidButton>
       </div>
     </dialog>
   )

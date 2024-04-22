@@ -1,9 +1,9 @@
 import React from 'react'
-import { useComponentsContext } from '../../hooks/useComponents'
+import { useComponents } from '../../hooks/useComponents'
 import { X } from 'lucide-react'
 
 const BluetoothComponentContainer = ({ children, component }) => {
-  const { removeComponent } = useComponentsContext()
+  const { removeComponent } = useComponents()
 
   const handleDelete = () => {
     removeComponent(component)

@@ -3,17 +3,17 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 // Create the context
 const ComponentsContext = createContext()
 
-export const useComponentsContext = () => {
+export const useComponents = () => {
   const context = useContext(ComponentsContext)
   if (!context) {
-    throw new Error('useComponentsContext must be used within an ComponentsProvider')
+    throw new Error('useComponents must be used within an ComponentsProvider')
   }
   return context
 }
 
 // Create the provider component
 export const ComponentsProvider = ({ children }) => {
-  const [components, setComponents] = useState(JSON.parse(window.localStorage.getItem('cartItems')) || [])
+  const [components, setComponents] = useState(JSON.parse(window.localStorage.getItem('components')) || [])
 
   useEffect(() => {
     window.localStorage.setItem('components', JSON.stringify(components))

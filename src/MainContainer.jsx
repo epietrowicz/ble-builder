@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useComponentsContext } from './hooks/useComponents'
+import { useComponents } from './hooks/useComponents'
 import componentOptions from './db/componentOptions'
 import { PlusCircleIcon } from 'lucide-react'
 import NewComponentModal from './components/modals/NewComponentModal'
@@ -10,7 +10,7 @@ import SliderComponent from './components/bluetoothComponents/SliderComponent'
 const MainContainer = () => {
   const [isActive, setIsActive] = useState(false)
   const [newComponentType, setNewComponentType] = useState(null)
-  const { components } = useComponentsContext()
+  const { components } = useComponents()
 
   const handleDragOver = (e) => {
     e.preventDefault()
@@ -81,16 +81,12 @@ const ButtonComponent = ({ bleComponent }) => {
   return (
     <div className='border p-8'>
       <h2 className='font-bold text-xl' />
-      {/* <label
-        className='block mb-2 text-xl font-bold'
-      >
-        {bleComponent.componentLabel}
-      </label> */}
       <SolidButton
         onClick={onButtonPress}
-        text={bleComponent.componentLabel}
         additionalClasses='w-full'
-      />
+      >
+        {bleComponent.componentLabel}
+      </SolidButton>
     </div>
   )
 }

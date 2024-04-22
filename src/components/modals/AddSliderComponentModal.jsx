@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useComponentsContext } from '../../hooks/useComponents'
+import { useComponents } from '../../hooks/useComponents'
 import OutlineButton from '../ui/OutlineButton'
 import SolidButton from '../ui/SolidButton'
 import TextInput from '../ui/TextInput'
@@ -10,7 +10,7 @@ import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
 
 const AddSliderComponentModal = ({ newComponentType }) => {
-  const { addComponent } = useComponentsContext()
+  const { addComponent } = useComponents()
 
   const [isRead, setIsRead] = useState(false)
   const [isWrite, setIsWrite] = useState(false)
@@ -138,15 +138,17 @@ const AddSliderComponentModal = ({ newComponentType }) => {
 
       <ModalButtonContainer>
         <OutlineButton
-          text='Cancel'
           onClick={() => document.getElementById('add_slider_component_modal').close()}
-        />
+        >
+          Cancel
+        </OutlineButton>
 
         <SolidButton
-          text='Add'
           onClick={handleAddComponent}
           disabled={noPropsSelected || missingUuid || badValues}
-        />
+        >
+          Add
+        </SolidButton>
       </ModalButtonContainer>
     </ModalContainer>
   )
