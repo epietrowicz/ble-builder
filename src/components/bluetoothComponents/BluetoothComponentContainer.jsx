@@ -12,9 +12,12 @@ const BluetoothComponentContainer = ({ children, component }) => {
   return (
     <div className='border p-8 relative'>
       <label className='block mb-2 text-xl font-bold'>
-        {component.componentLabel}
+        {component?.componentLabel}
       </label>
       {children}
+      <div>
+        {component?.bluetoothProperties?.state}
+      </div>
       <button
         onClick={handleDelete}
         className='absolute right-0 top-0 p-2'

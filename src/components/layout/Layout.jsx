@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Sidebar from './Sidebar'
 import SolidButton from '../ui/SolidButton'
 import { BluetoothIcon, BluetoothOff } from 'lucide-react'
@@ -27,7 +27,7 @@ const Header = () => {
   } = useBluetooth()
 
   return (
-    <div className='w-full border-b bg-red-500 flex justify-end p-4 space-x-2'>
+    <div className='w-full border-b flex justify-end p-4 space-x-2'>
 
       {connectionState === 'DISCONNECTED'
         ? (
@@ -39,7 +39,7 @@ const Header = () => {
             />
             <SolidButton onClick={connectToDevice}>
               <BluetoothIcon className='mr-2' />
-              Connect
+              Start scan
             </SolidButton>
           </>
           )

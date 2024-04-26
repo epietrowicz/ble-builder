@@ -46,6 +46,9 @@ const AddSliderComponentModal = ({ newComponentType }) => {
       serviceUuid,
       characteristicUuid,
       bluetoothProperties: {
+        state: 'DISCONNECTED',
+        gattService: null,
+        gattCharacteristic: null,
         read: isRead,
         write: isWrite,
         notify: isNotify
@@ -53,7 +56,8 @@ const AddSliderComponentModal = ({ newComponentType }) => {
       sliderProperties: {
         min: minValue,
         max: maxValue,
-        step
+        step,
+        value: Math.ceil((maxValue - minValue) / 2)
       }
     }
     addComponent(newComponent)
@@ -130,6 +134,17 @@ const AddSliderComponentModal = ({ newComponentType }) => {
           value={step}
           onChange={e => setStep(e.target.value)}
         />
+      </div>
+
+      <div className='mt-4'>
+        <label className='block'>
+          <span>Payload size</span>
+          <select className='border w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-black'>
+            <option value='8_BIT'>8 bit</option>
+            <option value='16_BIT'>16 bit</option>
+            <option value='32_BIT'>32 bit</option>
+          </select>
+        </label>
       </div>
 
       <div className='flex flex-col mt-4 space-y-2'>

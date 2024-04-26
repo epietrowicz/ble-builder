@@ -27,9 +27,38 @@ export const ComponentsProvider = ({ children }) => {
     setComponents(prev => prev.filter(c => c.id !== component.id))
   }
 
+  const updateComponentProperty = (component, key, value) => {
+    setComponents(prev => {
+      const newComponents = prev.filter(c => c.id !== component.id)
+      if (component.type === 'SLIDER') {
+        component.sliderProperties[key] = value
+      }
+      return [...newComponents, component]
+    })
+  }
+  console.log(components)
+  const updateComponentBluetoothProperty = (component, key, value) => {
+    setComponents(prev => {
+      const newComponents = prev.filter(c => c.id !== component.id)
+      component.bluetoothProperties[key] = value
+      return [...newComponents, component]
+    })
+  }
+
+  const setComponentState = (component, key, value) => {
+    setComponents(prev => {
+      const newComponents = prev.filter(c => c.id !== component.id)
+      component[key] = value
+      return [...newComponents, component]
+    })
+  }
+
   return (
     <ComponentsContext.Provider value={{
       components,
+      setComponentState,
+      updateComponentProperty,
+      updateComponentBluetoothProperty,
       addComponent,
       removeComponent
     }}
