@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
-// Create the context
 const ComponentsContext = createContext()
 
 export const useComponents = () => {
@@ -11,13 +10,13 @@ export const useComponents = () => {
   return context
 }
 
-// Create the provider component
 export const ComponentsProvider = ({ children }) => {
   const [components, setComponents] = useState(JSON.parse(window.localStorage.getItem('components')) || [])
+  const [focusedComponent, setFocusedComponent] = useState(null)
 
   useEffect(() => {
     window.localStorage.setItem('components', JSON.stringify(components))
-  }, [components])
+  }, [JSON.stringify(components)])
 
   const addComponent = (component) => {
     setComponents(prev => [...prev, component])
@@ -27,40 +26,36 @@ export const ComponentsProvider = ({ children }) => {
     setComponents(prev => prev.filter(c => c.id !== component.id))
   }
 
-  const updateComponentProperty = (component, key, value) => {
+  const updateComponentSpecificProperty = (component, key, value) => {
     setComponents(prev => {
-      const newComponents = prev.filter(c => c.id !== component.id)
+      const newComponents = [...prev]
+      const idx = newComponents.findIndex(c => c.id === component.id)
       if (component.type === 'SLIDER') {
         component.sliderProperties[key] = value
       }
-      return [...newComponents, component]
-    })
-  }
-  console.log(components)
-  const updateComponentBluetoothProperty = (component, key, value) => {
-    setComponents(prev => {
-      const newComponents = prev.filter(c => c.id !== component.id)
-      component.bluetoothProperties[key] = value
-      return [...newComponents, component]
+      newComponents[idx] = component
+      return newComponents
     })
   }
 
-  const setComponentState = (component, key, value) => {
+  const updateComponent = (newComponent) => {
     setComponents(prev => {
-      const newComponents = prev.filter(c => c.id !== component.id)
-      component[key] = value
-      return [...newComponents, component]
+      const newComponents = [...prev]
+      const idx = newComponents.findIndex(c => c.id === newComponent.id)
+      newComponents[idx] = newComponent
+      return newComponents
     })
   }
 
   return (
     <ComponentsContext.Provider value={{
       components,
-      setComponentState,
-      updateComponentProperty,
-      updateComponentBluetoothProperty,
+      updateComponent,
+      updateComponentSpecificProperty,
       addComponent,
-      removeComponent
+      removeComponent,
+      focusedComponent,
+      setFocusedComponent
     }}
     >
       {children}

@@ -1,15 +1,12 @@
 import React, { useState } from 'react'
 import { useComponents } from './hooks/useComponents'
-import componentOptions from './db/componentOptions'
 import { PlusCircleIcon } from 'lucide-react'
-import NewComponentModal from './components/modals/NewComponentModal'
 import SolidButton from './components/ui/SolidButton'
 import AddSliderComponentModal from './components/modals/AddSliderComponentModal'
 import SliderComponent from './components/bluetoothComponents/SliderComponent'
 
 const MainContainer = () => {
   const [isActive, setIsActive] = useState(false)
-  const [newComponentType, setNewComponentType] = useState(null)
   const { components } = useComponents()
 
   const handleDragOver = (e) => {
@@ -24,11 +21,7 @@ const MainContainer = () => {
   const handleDragEnd = (e) => {
     setIsActive(false)
     const componentType = e.dataTransfer.getData('componentType')
-    console.log(componentType)
-    const newComponent = componentOptions.find((c) => c.type === componentType)
-    console.log(newComponent.type)
-    setNewComponentType(newComponent)
-    if (newComponent.type === 'SLIDER') {
+    if (componentType === 'SLIDER') {
       document.getElementById('add_slider_component_modal').showModal()
     }
   }
@@ -48,12 +41,7 @@ const MainContainer = () => {
 
   return (
     <>
-      <NewComponentModal
-        newComponentType={newComponentType}
-      />
-      <AddSliderComponentModal
-        newComponentType={newComponentType}
-      />
+      <AddSliderComponentModal />
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -75,7 +63,6 @@ const MainContainer = () => {
 
 const ButtonComponent = ({ bleComponent }) => {
   const onButtonPress = () => {
-    console.log('pressed!')
   }
 
   return (

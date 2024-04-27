@@ -1,29 +1,88 @@
-import React from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { useComponents } from '../../hooks/useComponents'
-import { X } from 'lucide-react'
+import { EllipsisIcon } from 'lucide-react'
+import useClickOutside from '../../hooks/useClickOutside'
 
-const BluetoothComponentContainer = ({ children, component }) => {
+const BluetoothComponentContainer = ({ children, component, onEdit }) => {
   const { removeComponent } = useComponents()
+  const [showDropdown, setShowDropdown] = useState(false)
+  const menuRef = useRef(null)
+
+  useClickOutside(menuRef, () => {
+    setShowDropdown(false)
+  })
 
   const handleDelete = () => {
     removeComponent(component)
   }
 
+  const state = component?.bluetoothProperties?.state
+  const badgeBaseClasses = 'inline-block text-xs font-medium me-2 px-2.5 py-0.5 rounded mt-2'
+  const componentStateBadge = useMemo(() => {
+    switch (state) {
+      case 'DISCONNECTED':
+        return (
+          <span className={`bg-gray-100 text-gray-800 ${badgeBaseClasses}`}>
+            Disconnected
+          </span>
+        )
+      case 'CONNECTED':
+        return (
+          <span className={`bg-green-100 text-green-800 ${badgeBaseClasses}`}>
+            Connected
+          </span>
+        )
+      case 'CHARACTERISTIC_NOT_FOUND':
+        return (
+          <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
+            Unknown characteristic
+          </span>
+        )
+      default:
+        return (
+          <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
+            Unknown service
+          </span>
+        )
+    }
+  }, [JSON.stringify(component)])
+
   return (
-    <div className='border p-8 relative'>
-      <label className='block mb-2 text-xl font-bold'>
+    <div className='border p-4 relative'>
+      <label className='block text-xl font-bold'>
         {component?.componentLabel}
       </label>
-      {children}
-      <div>
-        {component?.bluetoothProperties?.state}
+      {componentStateBadge}
+      <div className='mt-4'>
+        {children}
       </div>
       <button
-        onClick={handleDelete}
+        data-dropdown-toggle='dropdown'
+        onClick={() => { setShowDropdown(prev => !prev) }}
         className='absolute right-0 top-0 p-2'
       >
-        <X className='text-gray-300 h-5 w-5' />
+        <EllipsisIcon className='text-gray-300 h-5 w-5' />
       </button>
+      <div ref={menuRef} className={`absolute right-2 top-8 z-10 ${!showDropdown && 'hidden'} bg-white border w-44`}>
+        <ul className='py-2 text-sm text-gray-700' aria-labelledby='dropdownDefaultButton'>
+          <li>
+            <span
+              onClick={onEdit}
+              className='block cursor-pointer px-4 py-2 hover:bg-gray-100'
+            >
+              Edit
+            </span>
+          </li>
+          <li>
+            <span
+              onClick={handleDelete}
+              className='block cursor-pointer px-4 py-2 hover:bg-red-100 hover:text-red-800'
+            >
+              Delete
+            </span>
+          </li>
+        </ul>
+      </div>
     </div>
   )
 }
