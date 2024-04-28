@@ -3,7 +3,7 @@ import { useComponents } from '../../hooks/useComponents'
 import { EllipsisIcon } from 'lucide-react'
 import useClickOutside from '../../hooks/useClickOutside'
 
-const BluetoothComponentContainer = ({ children, component, onEdit }) => {
+const BluetoothComponentContainer = ({ children, component, onEdit, handleReadValue }) => {
   const { removeComponent } = useComponents()
   const [showDropdown, setShowDropdown] = useState(false)
   const menuRef = useRef(null)
@@ -65,6 +65,18 @@ const BluetoothComponentContainer = ({ children, component, onEdit }) => {
       </button>
       <div ref={menuRef} className={`absolute right-2 top-8 z-10 ${!showDropdown && 'hidden'} bg-white border w-44`}>
         <ul className='py-2 text-sm text-gray-700' aria-labelledby='dropdownDefaultButton'>
+          {component.bluetoothProperties.read && (
+            <li>
+              <span
+                className='block cursor-pointer px-4 py-2 hover:bg-gray-100'
+                onClick={() => {
+                  handleReadValue()
+                  setShowDropdown(false)
+                }}
+              >
+                Read value
+              </span>
+            </li>)}
           <li>
             <span
               onClick={onEdit}

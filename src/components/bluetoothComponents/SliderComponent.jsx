@@ -6,30 +6,46 @@ const SliderComponent = ({ bleComponent }) => {
   const { setFocusedComponent } = useComponents()
   const [sliderValue, setSliderValue] = useState(bleComponent?.sliderProperties?.value)
 
+  const parseIncomingValue = (result) => {
+    switch (result.byteLength) {
+      case 1:
+        return result.getInt8(0)
+      case 2:
+        return result.getInt16(0)
+      case 4:
+        return result.getInt32(0)
+    }
+  }
+
   const readValue = async (gattCharacteristic) => {
     const result = await gattCharacteristic.readValue()
-    const value = result.getInt8(0)
-    console.log(value)
-    setSliderValue(value)
+    const parsedValue = parseIncomingValue(result)
+    console.log('Read Value', parsedValue)
+    setSliderValue(parsedValue)
   }
 
   const notifyEventChange = (e) => {
-    const value = e.target.value.getInt8(0)
-    console.log(value)
-    setSliderValue(value)
+    const result = e.target.value
+    const parsedValue = parseIncomingValue(result)
+    console.log('Notified Value', parsedValue)
+    setSliderValue(parsedValue)
   }
 
   useEffect(() => {
     setSliderValue(bleComponent?.sliderProperties?.value)
-    if (bleComponent.bluetoothProperties.gattCharacteristic !== null) {
-      const characteristic = bleComponent.bluetoothProperties.gattCharacteristic
-      if (bleComponent.bluetoothProperties.read) {
-        readValue(characteristic)
+    try {
+      if (bleComponent.bluetoothProperties.gattCharacteristic !== null) {
+        const characteristic = bleComponent.bluetoothProperties.gattCharacteristic
+        if (bleComponent.bluetoothProperties.read) {
+          readValue(characteristic)
+        }
+        if (bleComponent.bluetoothProperties.notify !== null) {
+          characteristic.startNotifications()
+          characteristic.addEventListener('characteristicvaluechanged', notifyEventChange)
+        }
       }
-      if (bleComponent.bluetoothProperties.notify) {
-        characteristic.startNotifications()
-        characteristic.addEventListener('characteristicvaluechanged', notifyEventChange)
-      }
+    } catch (e) {
+      console.log(e)
     }
   }, [JSON.stringify(bleComponent)])
 
@@ -38,8 +54,8 @@ const SliderComponent = ({ bleComponent }) => {
       const val = e.target.value
       setSliderValue(val)
       if (bleComponent.bluetoothProperties.gattCharacteristic !== null && bleComponent.bluetoothProperties.write) {
-        const encoder = new TextEncoder('utf-8')
-        await bleComponent.bluetoothProperties.gattCharacteristic.writeValueWithResponse(encoder.encode(val))
+        const encodedValue = new Uint8Array([val])
+        await bleComponent.bluetoothProperties.gattCharacteristic.writeValueWithResponse(encodedValue)
       }
     } catch (e) {
       console.log(e)
@@ -51,8 +67,19 @@ const SliderComponent = ({ bleComponent }) => {
     document.getElementById('add_slider_component_modal').showModal()
   }
 
+  const handleReadValue = async () => {
+    const characteristic = bleComponent.bluetoothProperties.gattCharacteristic
+    if (bleComponent.bluetoothProperties.read && characteristic !== null) {
+      readValue(characteristic)
+    }
+  }
+
   return (
-    <BluetoothComponentContainer component={bleComponent} onEdit={handleEditComponent}>
+    <BluetoothComponentContainer
+      component={bleComponent}
+      onEdit={handleEditComponent}
+      handleReadValue={handleReadValue}
+    >
       <input
         type='range'
         min={bleComponent?.sliderProperties?.min}
