@@ -15,7 +15,7 @@ const ComponentCard = ({ component }) => {
     >
       <div className='mb-2'>{component.icon}</div>
       <h2 className='font-semibold'>{component.title}</h2>
-      <p className='text-sm text-gray-500'>{component.description}</p>
+      <p className='text-sm text-gray-500 text-center'>{component.description}</p>
     </div>
   )
 }

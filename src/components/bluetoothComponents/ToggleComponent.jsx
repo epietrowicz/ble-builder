@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import BluetoothComponentContainer from './BluetoothComponentContainer'
 import { useComponents } from '../../hooks/useComponents'
 
-const SliderComponent = ({ component }) => {
+const ToggleComponent = ({ component }) => {
   const { setFocusedComponent } = useComponents()
-  const [sliderValue, setSliderValue] = useState(component?.sliderProperties?.value)
+  //   const [sliderValue, setSliderValue] = useState(component?.sliderProperties?.value)
 
   const parseIncomingValue = (result) => {
     switch (result.byteLength) {
@@ -21,18 +21,18 @@ const SliderComponent = ({ component }) => {
     const result = await gattCharacteristic.readValue()
     const parsedValue = parseIncomingValue(result)
     console.log('Read Value', parsedValue)
-    setSliderValue(parsedValue)
+    // setSliderValue(parsedValue)
   }
 
   const notifyEventChange = (e) => {
     const result = e.target.value
     const parsedValue = parseIncomingValue(result)
     console.log('Notified Value', parsedValue)
-    setSliderValue(parsedValue)
+    // setSliderValue(parsedValue)
   }
 
   useEffect(() => {
-    setSliderValue(component?.sliderProperties?.value)
+    // setSliderValue(component?.sliderProperties?.value)
     try {
       if (component.bluetoothProperties.gattCharacteristic !== null) {
         const characteristic = component.bluetoothProperties.gattCharacteristic
@@ -52,7 +52,7 @@ const SliderComponent = ({ component }) => {
   const handleValueChange = async (e) => {
     try {
       const val = e.target.value
-      setSliderValue(val)
+      //   setSliderValue(val)
       if (component.bluetoothProperties.gattCharacteristic !== null && component.bluetoothProperties.write) {
         const encodedValue = new Uint8Array([val])
         await component.bluetoothProperties.gattCharacteristic.writeValueWithResponse(encodedValue)
@@ -80,18 +80,15 @@ const SliderComponent = ({ component }) => {
       onEdit={handleEditComponent}
       handleReadValue={handleReadValue}
     >
-      <input
-        type='range'
-        min={component?.sliderProperties?.min}
-        max={component?.sliderProperties?.max}
-        step={component?.sliderProperties?.step}
-        value={sliderValue}
-        disabled={!component?.bluetoothProperties?.write || component.bluetoothProperties.state === 'DISCONNECTED'}
-        onChange={e => handleValueChange(e)}
-        className='w-full cursor-pointer'
-      />
+
+      <label className='inline-flex items-center cursor-pointer'>
+        <input type='checkbox' value='' className='sr-only peer' />
+        <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
+        {/* <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300'>Toggle me</span> */}
+      </label>
+
     </BluetoothComponentContainer>
   )
 }
 
-export default SliderComponent
+export default ToggleComponent

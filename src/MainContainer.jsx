@@ -4,6 +4,10 @@ import { PlusCircleIcon } from 'lucide-react'
 import SolidButton from './components/ui/SolidButton'
 import AddSliderComponentModal from './components/modals/AddSliderComponentModal'
 import SliderComponent from './components/bluetoothComponents/SliderComponent'
+import AddButtonComponentModal from './components/modals/AddButtonComponentModal'
+import ButtonComponent from './components/bluetoothComponents/ButtonComponent'
+import AddToggleComponentModal from './components/modals/AddToggleComponentModal'
+import ToggleComponent from './components/bluetoothComponents/ToggleComponent'
 
 const MainContainer = () => {
   const [isActive, setIsActive] = useState(false)
@@ -23,25 +27,29 @@ const MainContainer = () => {
     const componentType = e.dataTransfer.getData('componentType')
     if (componentType === 'SLIDER') {
       document.getElementById('add_slider_component_modal').showModal()
+    } else if (componentType === 'BUTTON') {
+      document.getElementById('add_button_component_modal').showModal()
+    } else if (componentType === 'TOGGLE') {
+      document.getElementById('add_toggle_component_modal').showModal()
     }
   }
 
-  const getComponentCard = (bleComponent) => {
-    switch (bleComponent.type) {
+  const getComponentCard = (component) => {
+    switch (component.type) {
       case 'SLIDER':
-        return (
-          <SliderComponent key={bleComponent.id} bleComponent={bleComponent} />
-        )
+        return (<SliderComponent key={component.id} component={component} />)
       case 'BUTTON':
-        return (
-          <ButtonComponent key={bleComponent.id} bleComponent={bleComponent} />
-        )
+        return (<ButtonComponent key={component.id} component={component} />)
+      case 'TOGGLE':
+        return (<ToggleComponent key={component.id} component={component} />)
     }
   }
 
   return (
     <>
       <AddSliderComponentModal />
+      <AddButtonComponentModal />
+      <AddToggleComponentModal />
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -58,23 +66,6 @@ const MainContainer = () => {
           </div>)}
       </div>
     </>
-  )
-}
-
-const ButtonComponent = ({ bleComponent }) => {
-  const onButtonPress = () => {
-  }
-
-  return (
-    <div className='border p-8'>
-      <h2 className='font-bold text-xl' />
-      <SolidButton
-        onClick={onButtonPress}
-        additionalClasses='w-full'
-      >
-        {bleComponent.componentLabel}
-      </SolidButton>
-    </div>
   )
 }
 

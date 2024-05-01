@@ -9,44 +9,26 @@ import ModalContainer from './ModalContainer'
 import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
 
-const AddSliderComponentModal = () => {
+const AddButtonComponentModal = () => {
   const { addComponent, focusedComponent, setFocusedComponent, updateComponent } = useComponents()
-
-  const [isRead, setIsRead] = useState(false)
-  const [isWrite, setIsWrite] = useState(false)
-  const [isNotify, setIsNotify] = useState(false)
 
   const [componentLabel, setComponentLabel] = useState('')
   const [serviceUuid, setServiceUuid] = useState('')
   const [characteristicUuid, setCharacteristicUuid] = useState('')
 
-  const [minValue, setMinValue] = useState(0)
-  const [maxValue, setMaxValue] = useState(100)
-  const [step, setStep] = useState(1)
+  const [valueToWrite, setValueToWrite] = useState(0)
 
-  const noPropsSelected = isRead === false && isWrite === false && isNotify === false
   const missingUuid = serviceUuid === '' || characteristicUuid === '' || componentLabel === ''
-  const badValues = minValue >= maxValue || step === 0
 
   useEffect(() => {
     if (focusedComponent !== null) {
-      setIsRead(focusedComponent.bluetoothProperties.read)
-      setIsWrite(focusedComponent.bluetoothProperties.write)
-      setIsNotify(focusedComponent.bluetoothProperties.notify)
       setComponentLabel(focusedComponent.componentLabel)
       setServiceUuid(focusedComponent.serviceUuid)
       setCharacteristicUuid(focusedComponent.characteristicUuid)
-      setMinValue(focusedComponent.sliderProperties.min)
-      setMaxValue(focusedComponent.sliderProperties.max)
-      setStep(focusedComponent.sliderProperties.step)
     }
   }, [JSON.stringify(focusedComponent)])
 
   const resetState = () => {
-    setIsRead(false)
-    setIsWrite(false)
-    setIsNotify(false)
-
     setComponentLabel('')
     setServiceUuid('')
     setCharacteristicUuid('')
@@ -56,7 +38,7 @@ const AddSliderComponentModal = () => {
     if (focusedComponent === null) {
       const newComponent = {
         id: nanoid(),
-        type: 'SLIDER',
+        type: 'BUTTON',
         componentLabel,
         serviceUuid,
         characteristicUuid,
@@ -64,43 +46,33 @@ const AddSliderComponentModal = () => {
           state: 'DISCONNECTED',
           gattService: null,
           gattCharacteristic: null,
-          read: isRead,
-          write: isWrite,
-          notify: isNotify
+          write: true
         },
-        sliderProperties: {
-          min: minValue,
-          max: maxValue,
-          step,
-          value: Math.ceil((maxValue - minValue) / 2)
+        buttonProperties: {
+          valueToWrite
         }
       }
       addComponent(newComponent)
     } else {
-      focusedComponent.bluetoothProperties.read = isRead
-      focusedComponent.bluetoothProperties.write = isWrite
-      focusedComponent.bluetoothProperties.notify = isNotify
       focusedComponent.componentLabel = componentLabel
       focusedComponent.serviceUuid = serviceUuid
       focusedComponent.characteristicUuid = characteristicUuid
-      focusedComponent.sliderProperties.min = minValue
-      focusedComponent.sliderProperties.max = maxValue
-      focusedComponent.sliderProperties.step = step
+      focusedComponent.buttonProperties.valueToWrite = valueToWrite
       updateComponent(focusedComponent)
       setFocusedComponent(null)
     }
-    document.getElementById('add_slider_component_modal').close()
+    document.getElementById('add_button_component_modal').close()
     resetState()
   }
 
   const handleCancel = () => {
-    document.getElementById('add_slider_component_modal').close()
+    document.getElementById('add_button_component_modal').close()
     setFocusedComponent(null)
     resetState()
   }
 
   return (
-    <ModalContainer modalId='add_slider_component_modal' modalTitle='Configure Slider Component'>
+    <ModalContainer modalId='add_button_component_modal' modalTitle='Configure Button Component'>
       <TextInput
         label='Component label'
         placeholder='Label'
@@ -122,45 +94,22 @@ const AddSliderComponentModal = () => {
         onChange={e => setCharacteristicUuid(e.target.value)}
       />
 
-      <div className='flex items-center space-x-2 mt-4'>
+      <div className='mt-4'>
         <NumberInput
-          label='Min value'
-          value={minValue}
-          onChange={e => setMinValue(e.target.value)}
-        />
-        <NumberInput
-          label='Max value'
-          value={maxValue}
-          onChange={e => setMaxValue(e.target.value)}
-        />
-        <NumberInput
-          label='Step'
-          value={step}
-          onChange={e => setStep(e.target.value)}
+          label='Value to Write'
+          value={valueToWrite}
+          onChange={e => setValueToWrite(e.target.value)}
         />
       </div>
 
-      <div className='flex flex-col mt-4 space-y-2'>
-        <CharacteristicPropertyCheckbox
-          key='read'
-          title='Read'
-          description='Read a value from your peripheral device'
-          checked={isRead}
-          onChange={() => setIsRead((prev) => !prev)}
-        />
+      <div className='mt-4'>
         <CharacteristicPropertyCheckbox
           key='write'
           title='Write'
           description='Write a value to your peripheral device'
-          checked={isWrite}
-          onChange={() => setIsWrite((prev) => !prev)}
-        />
-        <CharacteristicPropertyCheckbox
-          key='notify'
-          title='Notify'
-          description='Listen to changes of a value on your peripheral device'
-          checked={isNotify}
-          onChange={() => setIsNotify((prev) => !prev)}
+          readOnly
+          checked
+          disabled
         />
       </div>
 
@@ -173,7 +122,7 @@ const AddSliderComponentModal = () => {
 
         <SolidButton
           onClick={handleAddComponent}
-          disabled={noPropsSelected || missingUuid || badValues}
+          disabled={missingUuid}
         >
           {focusedComponent === null ? 'Add' : 'Update'}
         </SolidButton>
@@ -182,4 +131,4 @@ const AddSliderComponentModal = () => {
   )
 }
 
-export default AddSliderComponentModal
+export default AddButtonComponentModal

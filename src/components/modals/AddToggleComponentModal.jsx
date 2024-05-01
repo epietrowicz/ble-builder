@@ -9,54 +9,53 @@ import ModalContainer from './ModalContainer'
 import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
 
-const AddSliderComponentModal = () => {
+const AddToggleComponentModal = () => {
   const { addComponent, focusedComponent, setFocusedComponent, updateComponent } = useComponents()
-
-  const [isRead, setIsRead] = useState(false)
-  const [isWrite, setIsWrite] = useState(false)
-  const [isNotify, setIsNotify] = useState(false)
 
   const [componentLabel, setComponentLabel] = useState('')
   const [serviceUuid, setServiceUuid] = useState('')
   const [characteristicUuid, setCharacteristicUuid] = useState('')
 
-  const [minValue, setMinValue] = useState(0)
-  const [maxValue, setMaxValue] = useState(100)
-  const [step, setStep] = useState(1)
+  const [write, setWrite] = useState(false)
+  const [read, setRead] = useState(false)
+  const [notify, setNotify] = useState(false)
 
-  const noPropsSelected = isRead === false && isWrite === false && isNotify === false
+  const [onValue, setOnValue] = useState(1)
+  const [offValue, setOffValue] = useState(0)
+
+  const noPropsSelected = write === false && read === false && notify === false
   const missingUuid = serviceUuid === '' || characteristicUuid === '' || componentLabel === ''
-  const badValues = minValue >= maxValue || step === 0
+  const badValues = onValue === offValue
 
   useEffect(() => {
     if (focusedComponent !== null) {
-      setIsRead(focusedComponent.bluetoothProperties.read)
-      setIsWrite(focusedComponent.bluetoothProperties.write)
-      setIsNotify(focusedComponent.bluetoothProperties.notify)
       setComponentLabel(focusedComponent.componentLabel)
       setServiceUuid(focusedComponent.serviceUuid)
       setCharacteristicUuid(focusedComponent.characteristicUuid)
-      setMinValue(focusedComponent.sliderProperties.min)
-      setMaxValue(focusedComponent.sliderProperties.max)
-      setStep(focusedComponent.sliderProperties.step)
+      setWrite(focusedComponent.bluetoothProperties.write)
+      setRead(focusedComponent.bluetoothProperties.read)
+      setNotify(focusedComponent.bluetoothProperties.notify)
+      setOffValue(focusedComponent.toggleProperties.offValue)
+      setOnValue(focusedComponent.toggleProperties.onValue)
     }
-  }, [JSON.stringify(focusedComponent)])
+  }, [focusedComponent])
 
   const resetState = () => {
-    setIsRead(false)
-    setIsWrite(false)
-    setIsNotify(false)
-
     setComponentLabel('')
     setServiceUuid('')
     setCharacteristicUuid('')
+    setRead(false)
+    setWrite(false)
+    setNotify(false)
+    setOnValue(1)
+    setOffValue(0)
   }
 
   const handleAddComponent = () => {
     if (focusedComponent === null) {
       const newComponent = {
         id: nanoid(),
-        type: 'SLIDER',
+        type: 'TOGGLE',
         componentLabel,
         serviceUuid,
         characteristicUuid,
@@ -64,43 +63,42 @@ const AddSliderComponentModal = () => {
           state: 'DISCONNECTED',
           gattService: null,
           gattCharacteristic: null,
-          read: isRead,
-          write: isWrite,
-          notify: isNotify
+          write,
+          read,
+          notify
         },
-        sliderProperties: {
-          min: minValue,
-          max: maxValue,
-          step,
-          value: Math.ceil((maxValue - minValue) / 2)
+        toggleProperties: {
+          onValue,
+          offValue
         }
       }
       addComponent(newComponent)
     } else {
-      focusedComponent.bluetoothProperties.read = isRead
-      focusedComponent.bluetoothProperties.write = isWrite
-      focusedComponent.bluetoothProperties.notify = isNotify
+      focusedComponent.bluetoothProperties.read = read
+      focusedComponent.bluetoothProperties.write = write
+      focusedComponent.bluetoothProperties.notify = notify
       focusedComponent.componentLabel = componentLabel
       focusedComponent.serviceUuid = serviceUuid
       focusedComponent.characteristicUuid = characteristicUuid
-      focusedComponent.sliderProperties.min = minValue
-      focusedComponent.sliderProperties.max = maxValue
-      focusedComponent.sliderProperties.step = step
+      focusedComponent.toggleProperties.min = onValue
+      focusedComponent.toggleProperties.max = offValue
+      updateComponent(focusedComponent)
+
       updateComponent(focusedComponent)
       setFocusedComponent(null)
     }
-    document.getElementById('add_slider_component_modal').close()
+    document.getElementById('add_toggle_component_modal').close()
     resetState()
   }
 
   const handleCancel = () => {
-    document.getElementById('add_slider_component_modal').close()
+    document.getElementById('add_toggle_component_modal').close()
     setFocusedComponent(null)
     resetState()
   }
 
   return (
-    <ModalContainer modalId='add_slider_component_modal' modalTitle='Configure Slider Component'>
+    <ModalContainer modalId='add_toggle_component_modal' modalTitle='Configure Button Component'>
       <TextInput
         label='Component label'
         placeholder='Label'
@@ -124,43 +122,38 @@ const AddSliderComponentModal = () => {
 
       <div className='flex items-center space-x-2 mt-4'>
         <NumberInput
-          label='Min value'
-          value={minValue}
-          onChange={e => setMinValue(e.target.value)}
+          label='Off value'
+          value={offValue}
+          onChange={e => setOffValue(e.target.value)}
         />
         <NumberInput
-          label='Max value'
-          value={maxValue}
-          onChange={e => setMaxValue(e.target.value)}
-        />
-        <NumberInput
-          label='Step'
-          value={step}
-          onChange={e => setStep(e.target.value)}
+          label='On value'
+          value={onValue}
+          onChange={e => onValue(e.target.value)}
         />
       </div>
 
-      <div className='flex flex-col mt-4 space-y-2'>
+      <div className='mt-4'>
         <CharacteristicPropertyCheckbox
           key='read'
           title='Read'
           description='Read a value from your peripheral device'
-          checked={isRead}
-          onChange={() => setIsRead((prev) => !prev)}
+          checked={read}
+          onChange={() => setRead((prev) => !prev)}
         />
         <CharacteristicPropertyCheckbox
           key='write'
           title='Write'
           description='Write a value to your peripheral device'
-          checked={isWrite}
-          onChange={() => setIsWrite((prev) => !prev)}
+          checked={write}
+          onChange={() => setWrite((prev) => !prev)}
         />
         <CharacteristicPropertyCheckbox
           key='notify'
           title='Notify'
           description='Listen to changes of a value on your peripheral device'
-          checked={isNotify}
-          onChange={() => setIsNotify((prev) => !prev)}
+          checked={notify}
+          onChange={() => setNotify((prev) => !prev)}
         />
       </div>
 
@@ -182,4 +175,4 @@ const AddSliderComponentModal = () => {
   )
 }
 
-export default AddSliderComponentModal
+export default AddToggleComponentModal
