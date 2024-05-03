@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { useComponents } from './hooks/useComponents'
 import { PlusCircleIcon } from 'lucide-react'
-import SolidButton from './components/ui/SolidButton'
 import AddSliderComponentModal from './components/modals/AddSliderComponentModal'
 import SliderComponent from './components/bluetoothComponents/SliderComponent'
 import AddButtonComponentModal from './components/modals/AddButtonComponentModal'
 import ButtonComponent from './components/bluetoothComponents/ButtonComponent'
 import AddToggleComponentModal from './components/modals/AddToggleComponentModal'
 import ToggleComponent from './components/bluetoothComponents/ToggleComponent'
+import ComingSoonModal from './components/modals/ComingSoonModal'
 
 const MainContainer = () => {
   const [isActive, setIsActive] = useState(false)
@@ -31,6 +31,8 @@ const MainContainer = () => {
       document.getElementById('add_button_component_modal').showModal()
     } else if (componentType === 'TOGGLE') {
       document.getElementById('add_toggle_component_modal').showModal()
+    } else {
+      document.getElementById('coming_soon_modal').showModal()
     }
   }
 
@@ -50,6 +52,7 @@ const MainContainer = () => {
       <AddSliderComponentModal />
       <AddButtonComponentModal />
       <AddToggleComponentModal />
+      <ComingSoonModal />
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
