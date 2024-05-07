@@ -15,7 +15,7 @@ const ButtonComponent = ({ component }) => {
     document.getElementById('add_button_component_modal').showModal()
   }
 
-  const onClick = async (e) => {
+  const onClick = async () => {
     try {
       setLoading(true)
       const valueToWrite = component.buttonProperties.valueToWrite

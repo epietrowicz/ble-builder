@@ -21,7 +21,7 @@ const AddButtonComponentModal = () => {
   const missingUuid = serviceUuid === '' || characteristicUuid === '' || componentLabel === ''
 
   useEffect(() => {
-    if (focusedComponent !== null) {
+    if (focusedComponent !== null && focusedComponent.type === 'BUTTON') {
       setComponentLabel(focusedComponent.componentLabel)
       setServiceUuid(focusedComponent.serviceUuid)
       setCharacteristicUuid(focusedComponent.characteristicUuid)

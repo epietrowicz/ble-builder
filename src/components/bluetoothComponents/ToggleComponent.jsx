@@ -4,7 +4,7 @@ import { useComponents } from '../../hooks/useComponents'
 
 const ToggleComponent = ({ component }) => {
   const { setFocusedComponent } = useComponents()
-  //   const [sliderValue, setSliderValue] = useState(component?.sliderProperties?.value)
+  const [toggleValue, setToggleValue] = useState(false)
 
   const parseIncomingValue = (result) => {
     switch (result.byteLength) {
@@ -21,18 +21,25 @@ const ToggleComponent = ({ component }) => {
     const result = await gattCharacteristic.readValue()
     const parsedValue = parseIncomingValue(result)
     console.log('Read Value', parsedValue)
-    // setSliderValue(parsedValue)
+    if (parsedValue === component.toggleProperties.onValue) {
+      setToggleValue(true)
+    } else if (parsedValue === component.toggleProperties.offValue) {
+      setToggleValue(false)
+    }
   }
 
   const notifyEventChange = (e) => {
     const result = e.target.value
     const parsedValue = parseIncomingValue(result)
     console.log('Notified Value', parsedValue)
-    // setSliderValue(parsedValue)
+    if (parsedValue === component.toggleProperties.onValue) {
+      setToggleValue(true)
+    } else if (parsedValue === component.toggleProperties.offValue) {
+      setToggleValue(false)
+    }
   }
 
   useEffect(() => {
-    // setSliderValue(component?.sliderProperties?.value)
     try {
       if (component.bluetoothProperties.gattCharacteristic !== null) {
         const characteristic = component.bluetoothProperties.gattCharacteristic
@@ -49,12 +56,13 @@ const ToggleComponent = ({ component }) => {
     }
   }, [JSON.stringify(component)])
 
-  const handleValueChange = async (e) => {
+  const handleValueChange = async () => {
     try {
-      const val = e.target.value
-      //   setSliderValue(val)
+      setToggleValue(prev => !prev)
       if (component.bluetoothProperties.gattCharacteristic !== null && component.bluetoothProperties.write) {
-        const encodedValue = new Uint8Array([val])
+        const encodedValue = toggleValue
+          ? new Uint8Array([component.toggleProperties.offValue])
+          : new Uint8Array([component.toggleProperties.onValue])
         await component.bluetoothProperties.gattCharacteristic.writeValueWithResponse(encodedValue)
       }
     } catch (e) {
@@ -64,7 +72,7 @@ const ToggleComponent = ({ component }) => {
 
   const handleEditComponent = () => {
     setFocusedComponent(component)
-    document.getElementById('add_slider_component_modal').showModal()
+    document.getElementById('add_toggle_component_modal').showModal()
   }
 
   const handleReadValue = async () => {
@@ -82,9 +90,13 @@ const ToggleComponent = ({ component }) => {
     >
 
       <label className='inline-flex items-center cursor-pointer'>
-        <input type='checkbox' value='' className='sr-only peer' />
+        <input
+          type='checkbox'
+          value={toggleValue}
+          onChange={handleValueChange}
+          className='sr-only peer'
+        />
         <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
-        {/* <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300'>Toggle me</span> */}
       </label>
 
     </BluetoothComponentContainer>

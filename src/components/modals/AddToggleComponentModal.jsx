@@ -28,7 +28,7 @@ const AddToggleComponentModal = () => {
   const badValues = onValue === offValue
 
   useEffect(() => {
-    if (focusedComponent !== null) {
+    if (focusedComponent !== null && focusedComponent.type === 'TOGGLE') {
       setComponentLabel(focusedComponent.componentLabel)
       setServiceUuid(focusedComponent.serviceUuid)
       setCharacteristicUuid(focusedComponent.characteristicUuid)
@@ -98,7 +98,7 @@ const AddToggleComponentModal = () => {
   }
 
   return (
-    <ModalContainer modalId='add_toggle_component_modal' modalTitle='Configure Button Component'>
+    <ModalContainer modalId='add_toggle_component_modal' modalTitle='Configure Toggle Component'>
       <TextInput
         label='Component label'
         placeholder='Label'

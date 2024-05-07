@@ -29,7 +29,7 @@ const AddSliderComponentModal = () => {
   const badValues = minValue >= maxValue || step === 0
 
   useEffect(() => {
-    if (focusedComponent !== null) {
+    if (focusedComponent !== null && focusedComponent.type === 'SLIDER') {
       setIsRead(focusedComponent.bluetoothProperties.read)
       setIsWrite(focusedComponent.bluetoothProperties.write)
       setIsNotify(focusedComponent.bluetoothProperties.notify)
