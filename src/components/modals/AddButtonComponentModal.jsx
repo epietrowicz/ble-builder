@@ -8,6 +8,7 @@ import NumberInput from '../ui/NumberInput'
 import ModalContainer from './ModalContainer'
 import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
+import { track } from '../../lib/mixpanel'
 
 const AddButtonComponentModal = () => {
   const { addComponent, focusedComponent, setFocusedComponent, updateComponent } = useComponents()
@@ -63,12 +64,14 @@ const AddButtonComponentModal = () => {
     }
     document.getElementById('add_button_component_modal').close()
     resetState()
+    track('Added button | BLE Builder')
   }
 
   const handleCancel = () => {
     document.getElementById('add_button_component_modal').close()
     setFocusedComponent(null)
     resetState()
+    track('Canceled button | BLE Builder')
   }
 
   return (

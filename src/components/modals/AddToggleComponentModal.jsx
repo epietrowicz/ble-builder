@@ -8,6 +8,7 @@ import NumberInput from '../ui/NumberInput'
 import ModalContainer from './ModalContainer'
 import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
+import { track } from '../../lib/mixpanel'
 
 const AddToggleComponentModal = () => {
   const { addComponent, focusedComponent, setFocusedComponent, updateComponent } = useComponents()
@@ -89,12 +90,14 @@ const AddToggleComponentModal = () => {
     }
     document.getElementById('add_toggle_component_modal').close()
     resetState()
+    track('Added toggle | BLE Builder')
   }
 
   const handleCancel = () => {
     document.getElementById('add_toggle_component_modal').close()
     setFocusedComponent(null)
     resetState()
+    track('Canceled toggle | BLE Builder')
   }
 
   return (

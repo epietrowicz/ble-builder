@@ -8,6 +8,7 @@ import NumberInput from '../ui/NumberInput'
 import ModalContainer from './ModalContainer'
 import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
+import { track } from '../../lib/mixpanel'
 
 const AddSliderComponentModal = () => {
   const { addComponent, focusedComponent, setFocusedComponent, updateComponent } = useComponents()
@@ -91,12 +92,14 @@ const AddSliderComponentModal = () => {
     }
     document.getElementById('add_slider_component_modal').close()
     resetState()
+    track('Added slider | BLE Builder')
   }
 
   const handleCancel = () => {
     document.getElementById('add_slider_component_modal').close()
     setFocusedComponent(null)
     resetState()
+    track('Canceled slider | BLE Builder')
   }
 
   return (

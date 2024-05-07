@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useComponents } from './hooks/useComponents'
 import { PlusCircleIcon } from 'lucide-react'
 import AddSliderComponentModal from './components/modals/AddSliderComponentModal'
@@ -8,10 +8,15 @@ import ButtonComponent from './components/bluetoothComponents/ButtonComponent'
 import AddToggleComponentModal from './components/modals/AddToggleComponentModal'
 import ToggleComponent from './components/bluetoothComponents/ToggleComponent'
 import ComingSoonModal from './components/modals/ComingSoonModal'
+import { track } from './lib/mixpanel'
 
 const MainContainer = () => {
   const [isActive, setIsActive] = useState(false)
   const { components } = useComponents()
+
+  useEffect(() => {
+    track('BLE Builder main page')
+  }, [])
 
   const handleDragOver = (e) => {
     e.preventDefault()
