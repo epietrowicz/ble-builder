@@ -1,5 +1,5 @@
 import mixpanel from 'mixpanel-browser'
-mixpanel.init(process.env.NEXT_PUBLIC_MIXPANEL_TOKEN)
+mixpanel.init(import.meta.env.VITE_PUBLIC_MIXPANEL_TOKEN)
 
 const envCheck = process.env.NODE_ENV === 'production'
 
