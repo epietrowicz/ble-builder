@@ -3,12 +3,12 @@ import { useComponents } from '../../hooks/useComponents'
 import OutlineButton from '../ui/OutlineButton'
 import SolidButton from '../ui/SolidButton'
 import TextInput from '../ui/TextInput'
-import CharacteristicPropertyCheckbox from '../ui/CharacteristicPropertyCheckbox'
 import NumberInput from '../ui/NumberInput'
 import ModalContainer from './ModalContainer'
 import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
 import { track } from '../../lib/mixpanel'
+import CharacteristicProperties from '../ui/CharacteristicProperties'
 
 const AddToggleComponentModal = () => {
   const { addComponent, focusedComponent, setFocusedComponent, updateComponent } = useComponents()
@@ -17,14 +17,9 @@ const AddToggleComponentModal = () => {
   const [serviceUuid, setServiceUuid] = useState('')
   const [characteristicUuid, setCharacteristicUuid] = useState('')
 
-  const [write, setWrite] = useState(false)
-  const [read, setRead] = useState(false)
-  const [notify, setNotify] = useState(false)
-
   const [onValue, setOnValue] = useState(1)
   const [offValue, setOffValue] = useState(0)
 
-  const noPropsSelected = write === false && read === false && notify === false
   const missingUuid = serviceUuid === '' || characteristicUuid === '' || componentLabel === ''
   const badValues = onValue === offValue
 
@@ -33,9 +28,6 @@ const AddToggleComponentModal = () => {
       setComponentLabel(focusedComponent.componentLabel)
       setServiceUuid(focusedComponent.serviceUuid)
       setCharacteristicUuid(focusedComponent.characteristicUuid)
-      setWrite(focusedComponent.bluetoothProperties.write)
-      setRead(focusedComponent.bluetoothProperties.read)
-      setNotify(focusedComponent.bluetoothProperties.notify)
       setOffValue(focusedComponent.toggleProperties.offValue)
       setOnValue(focusedComponent.toggleProperties.onValue)
     }
@@ -45,9 +37,6 @@ const AddToggleComponentModal = () => {
     setComponentLabel('')
     setServiceUuid('')
     setCharacteristicUuid('')
-    setRead(false)
-    setWrite(false)
-    setNotify(false)
     setOnValue(1)
     setOffValue(0)
   }
@@ -58,15 +47,12 @@ const AddToggleComponentModal = () => {
         id: nanoid(),
         type: 'TOGGLE',
         componentLabel,
-        serviceUuid,
-        characteristicUuid,
+        serviceUuid: serviceUuid.toLowerCase(),
+        characteristicUuid: characteristicUuid.toLowerCase(),
         bluetoothProperties: {
           state: 'DISCONNECTED',
           gattService: null,
-          gattCharacteristic: null,
-          write,
-          read,
-          notify
+          gattCharacteristic: null
         },
         toggleProperties: {
           onValue,
@@ -75,12 +61,9 @@ const AddToggleComponentModal = () => {
       }
       addComponent(newComponent)
     } else {
-      focusedComponent.bluetoothProperties.read = read
-      focusedComponent.bluetoothProperties.write = write
-      focusedComponent.bluetoothProperties.notify = notify
       focusedComponent.componentLabel = componentLabel
-      focusedComponent.serviceUuid = serviceUuid
-      focusedComponent.characteristicUuid = characteristicUuid
+      focusedComponent.serviceUuid = serviceUuid.toLowerCase()
+      focusedComponent.characteristicUuid = characteristicUuid.toLowerCase()
       focusedComponent.toggleProperties.min = onValue
       focusedComponent.toggleProperties.max = offValue
       updateComponent(focusedComponent)
@@ -136,28 +119,8 @@ const AddToggleComponentModal = () => {
         />
       </div>
 
-      <div className='mt-4'>
-        <CharacteristicPropertyCheckbox
-          key='read'
-          title='Read'
-          description='Read a value from your peripheral device'
-          checked={read}
-          onChange={() => setRead((prev) => !prev)}
-        />
-        <CharacteristicPropertyCheckbox
-          key='write'
-          title='Write'
-          description='Write a value to your peripheral device'
-          checked={write}
-          onChange={() => setWrite((prev) => !prev)}
-        />
-        <CharacteristicPropertyCheckbox
-          key='notify'
-          title='Notify'
-          description='Listen to changes of a value on your peripheral device'
-          checked={notify}
-          onChange={() => setNotify((prev) => !prev)}
-        />
+      <div className='mt-6'>
+        <CharacteristicProperties isRead isWrite isNotify />
       </div>
 
       <ModalButtonContainer>
@@ -169,7 +132,7 @@ const AddToggleComponentModal = () => {
 
         <SolidButton
           onClick={handleAddComponent}
-          disabled={noPropsSelected || missingUuid || badValues}
+          disabled={missingUuid || badValues}
         >
           {focusedComponent === null ? 'Add' : 'Update'}
         </SolidButton>

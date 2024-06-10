@@ -1,26 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import BluetoothComponentContainer from './BluetoothComponentContainer'
 import { useComponents } from '../../hooks/useComponents'
+import { parseIncomingValue, writeToCharacteristic } from '../../lib/bleUtils'
+import useIncomingBluetoothData from '../../hooks/useIncomingBluetoothData'
 
 const ToggleComponent = ({ component }) => {
   const { setFocusedComponent } = useComponents()
   const [toggleValue, setToggleValue] = useState(false)
 
-  const parseIncomingValue = (result) => {
-    switch (result.byteLength) {
-      case 1:
-        return result.getInt8(0)
-      case 2:
-        return result.getInt16(0)
-      case 4:
-        return result.getInt32(0)
-    }
-  }
+  const characteristic = component?.bluetoothProperties?.gattCharacteristic ?? null
 
-  const readValue = async (gattCharacteristic) => {
-    const result = await gattCharacteristic.readValue()
+  const readValue = async () => {
+    const result = await characteristic.readValue()
     const parsedValue = parseIncomingValue(result)
-    console.log('Read Value', parsedValue)
+
     if (parsedValue === component.toggleProperties.onValue) {
       setToggleValue(true)
     } else if (parsedValue === component.toggleProperties.offValue) {
@@ -31,7 +24,7 @@ const ToggleComponent = ({ component }) => {
   const notifyEventChange = (e) => {
     const result = e.target.value
     const parsedValue = parseIncomingValue(result)
-    console.log('Notified Value', parsedValue)
+
     if (parsedValue === component.toggleProperties.onValue) {
       setToggleValue(true)
     } else if (parsedValue === component.toggleProperties.offValue) {
@@ -39,35 +32,18 @@ const ToggleComponent = ({ component }) => {
     }
   }
 
-  useEffect(() => {
-    try {
-      if (component.bluetoothProperties.gattCharacteristic !== null) {
-        const characteristic = component.bluetoothProperties.gattCharacteristic
-        if (component.bluetoothProperties.read) {
-          readValue(characteristic)
-        }
-        if (component.bluetoothProperties.notify !== null) {
-          characteristic.startNotifications()
-          characteristic.addEventListener('characteristicvaluechanged', notifyEventChange)
-        }
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }, [JSON.stringify(component)])
+  useIncomingBluetoothData(
+    characteristic,
+    readValue,
+    notifyEventChange,
+    [JSON.stringify(component)])
 
   const handleValueChange = async () => {
-    try {
-      setToggleValue(prev => !prev)
-      if (component.bluetoothProperties.gattCharacteristic !== null && component.bluetoothProperties.write) {
-        const encodedValue = toggleValue
-          ? new Uint8Array([component.toggleProperties.offValue])
-          : new Uint8Array([component.toggleProperties.onValue])
-        await component.bluetoothProperties.gattCharacteristic.writeValueWithResponse(encodedValue)
-      }
-    } catch (e) {
-      console.log(e)
-    }
+    setToggleValue(prev => !prev)
+    const encodedValue = toggleValue
+      ? new Uint8Array([component.toggleProperties.offValue])
+      : new Uint8Array([component.toggleProperties.onValue])
+    await writeToCharacteristic(encodedValue, characteristic)
   }
 
   const handleEditComponent = () => {

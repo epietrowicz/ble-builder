@@ -35,13 +35,31 @@ const BluetoothComponentContainer = ({ children, component, onEdit, handleReadVa
       case 'CHARACTERISTIC_NOT_FOUND':
         return (
           <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
-            Unknown characteristic
+            Characteristic not found
+          </span>
+        )
+      case 'READ_NOT_SUPPORTED':
+        return (
+          <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
+            Read not supported
+          </span>
+        )
+      case 'WRITE_NOT_SUPPORTED':
+        return (
+          <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
+            Write not supported
+          </span>
+        )
+      case 'NOTIFY_NOT_SUPPORTED':
+        return (
+          <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
+            Notify not supported
           </span>
         )
       default:
         return (
           <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
-            Unknown service
+            Service not found
           </span>
         )
     }

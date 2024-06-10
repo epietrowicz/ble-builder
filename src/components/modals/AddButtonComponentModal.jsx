@@ -3,12 +3,12 @@ import { useComponents } from '../../hooks/useComponents'
 import OutlineButton from '../ui/OutlineButton'
 import SolidButton from '../ui/SolidButton'
 import TextInput from '../ui/TextInput'
-import CharacteristicPropertyCheckbox from '../ui/CharacteristicPropertyCheckbox'
 import NumberInput from '../ui/NumberInput'
 import ModalContainer from './ModalContainer'
 import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
 import { track } from '../../lib/mixpanel'
+import CharacteristicProperties from '../ui/CharacteristicProperties'
 
 const AddButtonComponentModal = () => {
   const { addComponent, focusedComponent, setFocusedComponent, updateComponent } = useComponents()
@@ -41,13 +41,12 @@ const AddButtonComponentModal = () => {
         id: nanoid(),
         type: 'BUTTON',
         componentLabel,
-        serviceUuid,
-        characteristicUuid,
+        serviceUuid: serviceUuid.toLowerCase(),
+        characteristicUuid: characteristicUuid.toLowerCase(),
         bluetoothProperties: {
           state: 'DISCONNECTED',
           gattService: null,
-          gattCharacteristic: null,
-          write: true
+          gattCharacteristic: null
         },
         buttonProperties: {
           valueToWrite
@@ -56,8 +55,8 @@ const AddButtonComponentModal = () => {
       addComponent(newComponent)
     } else {
       focusedComponent.componentLabel = componentLabel
-      focusedComponent.serviceUuid = serviceUuid
-      focusedComponent.characteristicUuid = characteristicUuid
+      focusedComponent.serviceUuid = serviceUuid.toLowerCase()
+      focusedComponent.characteristicUuid = characteristicUuid.toLowerCase()
       focusedComponent.buttonProperties.valueToWrite = valueToWrite
       updateComponent(focusedComponent)
       setFocusedComponent(null)
@@ -105,15 +104,8 @@ const AddButtonComponentModal = () => {
         />
       </div>
 
-      <div className='mt-4'>
-        <CharacteristicPropertyCheckbox
-          key='write'
-          title='Write'
-          description='Write a value to your peripheral device'
-          readOnly
-          checked
-          disabled
-        />
+      <div className='mt-6'>
+        <CharacteristicProperties isWrite />
       </div>
 
       <ModalButtonContainer>
