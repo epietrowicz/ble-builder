@@ -4,6 +4,7 @@ import TextInput from '../ui/TextInput'
 import SolidButton from '../ui/SolidButton'
 import OutlineButton from '../ui/OutlineButton'
 import { BluetoothIcon, BluetoothOff, VideoIcon } from 'lucide-react'
+import { track } from '../../lib/mixpanel'
 
 const Header = () => {
   const {
@@ -50,6 +51,7 @@ const Header = () => {
             )}
 
       <OutlineButton onClick={() => {
+        track('Demo clicked | BLE Builder')
         window.open('https://pietrowicz-portfolio.s3.amazonaws.com/blueprint-demo-1.mp4', '_blank')
       }}
       >
