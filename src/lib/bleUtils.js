@@ -11,8 +11,7 @@ export const parseIncomingValue = (result) => {
 
 export const writeToCharacteristic = async (encodedValue, characteristic) => {
   try {
-    if (characteristic !== null && characteristic.properties.write) {
-    //   const encodedValue = new Uint8Array([value])
+    if (characteristic !== null) {
       if (characteristic.properties.writeWithoutResponse) {
         await characteristic.writeValueWithoutResponse(encodedValue)
       } else {

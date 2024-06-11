@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useComponents } from '../../hooks/useComponents'
 import { EllipsisIcon } from 'lucide-react'
 import useClickOutside from '../../hooks/useClickOutside'
@@ -7,6 +7,9 @@ const BluetoothComponentContainer = ({ children, component, onEdit, handleReadVa
   const { removeComponent } = useComponents()
   const [showDropdown, setShowDropdown] = useState(false)
   const menuRef = useRef(null)
+  const characteristic = component?.bluetoothProperties?.gattCharacteristic ?? null
+
+  useEffect(() => {}, [JSON.stringify(characteristic)])
 
   useClickOutside(menuRef, () => {
     setShowDropdown(false)
@@ -18,6 +21,7 @@ const BluetoothComponentContainer = ({ children, component, onEdit, handleReadVa
 
   const state = component?.bluetoothProperties?.state
   const badgeBaseClasses = 'inline-block text-xs font-medium me-2 px-2.5 py-0.5 rounded mt-2'
+
   const componentStateBadge = useMemo(() => {
     switch (state) {
       case 'DISCONNECTED':
@@ -36,24 +40,6 @@ const BluetoothComponentContainer = ({ children, component, onEdit, handleReadVa
         return (
           <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
             Characteristic not found
-          </span>
-        )
-      case 'READ_NOT_SUPPORTED':
-        return (
-          <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
-            Read not supported
-          </span>
-        )
-      case 'WRITE_NOT_SUPPORTED':
-        return (
-          <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
-            Write not supported
-          </span>
-        )
-      case 'NOTIFY_NOT_SUPPORTED':
-        return (
-          <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
-            Notify not supported
           </span>
         )
       default:
@@ -83,7 +69,7 @@ const BluetoothComponentContainer = ({ children, component, onEdit, handleReadVa
       </button>
       <div ref={menuRef} className={`absolute right-2 top-8 z-10 ${!showDropdown && 'hidden'} bg-white border w-44`}>
         <ul className='py-2 text-sm text-gray-700' aria-labelledby='dropdownDefaultButton'>
-          {component.bluetoothProperties.read && (
+          {characteristic?.properties?.read && (
             <li>
               <span
                 className='block cursor-pointer px-4 py-2 hover:bg-gray-100'

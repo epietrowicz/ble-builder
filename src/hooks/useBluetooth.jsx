@@ -92,6 +92,7 @@ export const BluetoothProvider = ({ children }) => {
   }
 
   const connectToDevice = async () => {
+    setConnectionState('CONNECTING')
     try {
       let connectionParams = { optionalServices: uniqueServices }
       if (scanFilter === '') {
@@ -111,6 +112,7 @@ export const BluetoothProvider = ({ children }) => {
     } catch (err) {
       console.error('Failed to connect to Bluetooth device:', err)
       setError(err)
+      setConnectionState('DISCONNECTED')
     }
   }
 

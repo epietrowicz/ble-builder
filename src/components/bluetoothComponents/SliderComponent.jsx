@@ -7,19 +7,18 @@ import useIncomingBluetoothData from '../../hooks/useIncomingBluetoothData'
 const SliderComponent = ({ component }) => {
   const { setFocusedComponent } = useComponents()
   const [sliderValue, setSliderValue] = useState(component?.sliderProperties?.value ?? 0)
-
   const characteristic = component?.bluetoothProperties?.gattCharacteristic ?? null
 
   const readValue = async () => {
     const value = await characteristic.readValue()
     const parsedValue = parseIncomingValue(value)
-    setSliderValue(parsedValue)
+    if (parsedValue) setSliderValue(parsedValue)
   }
 
   const notifyEventChange = (e) => {
     const result = e.target.value
     const parsedValue = parseIncomingValue(result)
-    if (parsedValue !== null) setSliderValue(parsedValue)
+    if (parsedValue) setSliderValue(parsedValue)
   }
 
   useIncomingBluetoothData(

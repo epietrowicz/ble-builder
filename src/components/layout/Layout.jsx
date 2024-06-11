@@ -43,13 +43,23 @@ const Header = () => {
             </SolidButton>
           </>
           )
-        : (
-          <>
-            <SolidButton onClick={disconnectDevice}>
-              <BluetoothOff className='mr-2' />
-              Disconnect
-            </SolidButton>
-          </>)}
+        : connectionState === 'CONNECTING'
+          ? (
+            <>
+              <SolidButton disabled>
+                <BluetoothIcon className='mr-2' />
+                Connecting...
+              </SolidButton>
+            </>
+            )
+          : (
+            <>
+              <SolidButton onClick={disconnectDevice}>
+                <BluetoothOff className='mr-2' />
+                Disconnect
+              </SolidButton>
+            </>
+            )}
     </div>
   )
 }

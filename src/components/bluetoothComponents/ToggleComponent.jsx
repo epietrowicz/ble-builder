@@ -6,14 +6,13 @@ import useIncomingBluetoothData from '../../hooks/useIncomingBluetoothData'
 
 const ToggleComponent = ({ component }) => {
   const { setFocusedComponent } = useComponents()
-  const [toggleValue, setToggleValue] = useState(false)
+  const [toggleValue, setToggleValue] = useState(true)
 
   const characteristic = component?.bluetoothProperties?.gattCharacteristic ?? null
 
   const readValue = async () => {
     const result = await characteristic.readValue()
     const parsedValue = parseIncomingValue(result)
-
     if (parsedValue === component.toggleProperties.onValue) {
       setToggleValue(true)
     } else if (parsedValue === component.toggleProperties.offValue) {
@@ -24,7 +23,6 @@ const ToggleComponent = ({ component }) => {
   const notifyEventChange = (e) => {
     const result = e.target.value
     const parsedValue = parseIncomingValue(result)
-
     if (parsedValue === component.toggleProperties.onValue) {
       setToggleValue(true)
     } else if (parsedValue === component.toggleProperties.offValue) {
@@ -39,10 +37,10 @@ const ToggleComponent = ({ component }) => {
     [JSON.stringify(component)])
 
   const handleValueChange = async () => {
-    setToggleValue(prev => !prev)
     const encodedValue = toggleValue
       ? new Uint8Array([component.toggleProperties.offValue])
       : new Uint8Array([component.toggleProperties.onValue])
+    setToggleValue(!toggleValue)
     await writeToCharacteristic(encodedValue, characteristic)
   }
 
@@ -53,7 +51,7 @@ const ToggleComponent = ({ component }) => {
 
   const handleReadValue = async () => {
     const characteristic = component.bluetoothProperties.gattCharacteristic
-    if (component.bluetoothProperties.read && characteristic !== null) {
+    if (characteristic !== null) {
       readValue(characteristic)
     }
   }
@@ -68,7 +66,7 @@ const ToggleComponent = ({ component }) => {
       <label className='inline-flex items-center cursor-pointer'>
         <input
           type='checkbox'
-          value={toggleValue}
+          checked={toggleValue}
           onChange={handleValueChange}
           className='sr-only peer'
         />

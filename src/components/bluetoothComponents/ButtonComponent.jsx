@@ -3,12 +3,13 @@ import { useComponents } from '../../hooks/useComponents'
 import SolidButton from '../ui/SolidButton'
 import BluetoothComponentContainer from './BluetoothComponentContainer'
 import { CloudUpload } from 'lucide-react'
+import { writeToCharacteristic } from '../../lib/bleUtils'
 
 const ButtonComponent = ({ component }) => {
   const { setFocusedComponent } = useComponents()
-  const [loading, setLoading] = useState(false)
 
   const buttonDisabled = component.bluetoothProperties.state === 'DISCONNECTED'
+  const characteristic = component?.bluetoothProperties?.gattCharacteristic ?? null
 
   const handleEditComponent = () => {
     setFocusedComponent(component)
@@ -16,19 +17,11 @@ const ButtonComponent = ({ component }) => {
   }
 
   const onClick = async () => {
-    try {
-      setLoading(true)
-      const valueToWrite = component.buttonProperties.valueToWrite
-      if (component.bluetoothProperties.gattCharacteristic !== null && component.bluetoothProperties.write) {
-        const encodedValue = new Uint8Array([valueToWrite])
-        await component.bluetoothProperties.gattCharacteristic.writeValueWithResponse(encodedValue)
-      }
-    } catch (e) {
-      console.log(e)
-    } finally {
-      setLoading(false)
-    }
+    const valueToWrite = component.buttonProperties.valueToWrite
+    const encodedValue = new Uint8Array([valueToWrite])
+    await writeToCharacteristic(encodedValue, characteristic)
   }
+
   return (
     <BluetoothComponentContainer
       component={component}
@@ -37,7 +30,6 @@ const ButtonComponent = ({ component }) => {
       <SolidButton
         onClick={onClick}
         disabled={buttonDisabled}
-        loading={loading}
         additionalClasses='w-full flex items-center justify-center'
       >
         <CloudUpload className='h-5 w-5' />
