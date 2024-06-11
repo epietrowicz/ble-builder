@@ -2,7 +2,8 @@ import React from 'react'
 import { useBluetooth } from '../../hooks/useBluetooth'
 import TextInput from '../ui/TextInput'
 import SolidButton from '../ui/SolidButton'
-import { BluetoothIcon, BluetoothOff } from 'lucide-react'
+import OutlineButton from '../ui/OutlineButton'
+import { BluetoothIcon, BluetoothOff, VideoIcon } from 'lucide-react'
 
 const Header = () => {
   const {
@@ -47,6 +48,14 @@ const Header = () => {
               </SolidButton>
             </>
             )}
+
+      <OutlineButton onClick={() => {
+        window.open('https://pietrowicz-portfolio.s3.amazonaws.com/blueprint-demo-1.mp4', '_blank')
+      }}
+      >
+        <VideoIcon className='mr-2' />
+        Demo
+      </OutlineButton>
     </div>
   )
 }
