@@ -121,6 +121,7 @@ export const BluetoothProvider = ({ children }) => {
       device,
       error,
       connectionState,
+      setError,
       setScanFilter,
       disconnectDevice,
       connectToDevice

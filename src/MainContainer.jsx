@@ -64,7 +64,7 @@ const MainContainer = () => {
         onDrop={handleDragEnd}
         className={`flex-1 relative ${isActive && 'bg-gray-100'}`}
       >
-        <div className='grid grid-cols-3 p-4 gap-4 max-w-5xl mx-auto'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 gap-4 max-w-5xl mx-auto'>
           {components.map(c => getComponentCard(c))}
         </div>
 

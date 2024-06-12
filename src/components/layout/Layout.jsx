@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import CallToAction from './CallToAction'
+import ErrorToast from './ErrorToast'
 
 const Layout = ({ children }) => {
   return (
@@ -12,6 +13,7 @@ const Layout = ({ children }) => {
         {children}
       </div>
       <CallToAction />
+      <ErrorToast />
     </div>
   )
 }

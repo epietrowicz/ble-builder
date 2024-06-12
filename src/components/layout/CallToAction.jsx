@@ -1,10 +1,11 @@
 import { XIcon } from 'lucide-react'
 import React, { useState } from 'react'
+import { useBluetooth } from '../../hooks/useBluetooth'
 
 const CallToAction = () => {
   const [ctaOpen, setCtaOpen] = useState(true)
-
-  return ctaOpen
+  const { error } = useBluetooth()
+  return ctaOpen && !error
     ? (
       <div className='absolute bottom-0 right-0 p-4 m-4 border max-w-72'>
         <h2 className='font-semibold mb-2'>Thank you 🤝</h2>

@@ -27,8 +27,8 @@ const Header = () => {
               onChange={e => setScanFilter(e.target.value)}
             />
             <SolidButton onClick={connectToDevice}>
-              <BluetoothIcon className='mr-2' />
-              Start scan
+              <BluetoothIcon className='md:mr-2' />
+              <span className='hidden md:block'>Start scan</span>
             </SolidButton>
           </>
           )
@@ -36,16 +36,18 @@ const Header = () => {
           ? (
             <>
               <SolidButton disabled>
-                <BluetoothIcon className='mr-2' />
-                Connecting...
+                <BluetoothIcon className='md:mr-2' />
+                {/* Connecting... */}
+                <span className='hidden md:block'>Connecting</span>
               </SolidButton>
             </>
             )
           : (
             <>
               <SolidButton onClick={disconnectDevice}>
-                <BluetoothOff className='mr-2' />
-                Disconnect
+                <BluetoothOff className='md:mr-2' />
+                {/* Disconnect */}
+                <span className='hidden md:block'>Disconnect</span>
               </SolidButton>
             </>
             )}
@@ -55,8 +57,8 @@ const Header = () => {
         window.open('https://pietrowicz-portfolio.s3.amazonaws.com/blueprint-demo-1.mp4', '_blank')
       }}
       >
-        <VideoIcon className='mr-2' />
-        Demo
+        <VideoIcon className='md:mr-2' />
+        <span className='hidden md:block'>Demo</span>
       </OutlineButton>
     </div>
   )
