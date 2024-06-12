@@ -10,6 +10,7 @@ const useIncomingBluetoothData = (characteristic, readValue, notifyEventChange, 
           readValue()
         }
         if (characteristic?.properties?.notify && !notificationsStarted) {
+          console.log('starting notifications!')
           characteristic.startNotifications()
           characteristic.addEventListener('characteristicvaluechanged', notifyEventChange)
           setNotificationsStarted(true)

@@ -10,6 +10,7 @@ import ToggleComponent from './components/bluetoothComponents/ToggleComponent'
 import ComingSoonModal from './components/modals/ComingSoonModal'
 import { track } from './lib/mixpanel'
 import AddSelectComponentModal from './components/modals/AddSelectComponentModal'
+import SelectComponent from './components/bluetoothComponents/SelectComponent'
 
 const MainContainer = () => {
   const [isActive, setIsActive] = useState(false)
@@ -37,11 +38,9 @@ const MainContainer = () => {
       document.getElementById('add_button_component_modal').showModal()
     } else if (componentType === 'TOGGLE') {
       document.getElementById('add_toggle_component_modal').showModal()
-    }
-    //  else if (componentType === 'SELECT') {
-    //   document.getElementById('add_select_component_modal').showModal()
-    // }
-    else {
+    } else if (componentType === 'SELECT') {
+      document.getElementById('add_select_component_modal').showModal()
+    } else {
       document.getElementById('coming_soon_modal').showModal()
     }
   }
@@ -54,8 +53,8 @@ const MainContainer = () => {
         return (<ButtonComponent key={component.id} component={component} />)
       case 'TOGGLE':
         return (<ToggleComponent key={component.id} component={component} />)
-        // case 'SELECT':
-        // return (<SelectComponent key={component.id} component={component} />)
+      case 'SELECT':
+        return (<SelectComponent key={component.id} component={component} />)
     }
   }
 
