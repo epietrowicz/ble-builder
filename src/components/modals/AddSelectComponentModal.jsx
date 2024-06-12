@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ModalContainer from './ModalContainer'
 import TextInput from '../ui/TextInput'
+import NumberInput from '../ui/NumberInput'
 import CharacteristicProperties from '../ui/CharacteristicProperties'
 import ModalButtonContainer from './ModalButtonContainer'
 import OutlineButton from '../ui/OutlineButton'
@@ -26,6 +27,7 @@ const AddSelectComponentModal = ({ component }) => {
       setComponentLabel(focusedComponent.componentLabel)
       setServiceUuid(focusedComponent.serviceUuid)
       setCharacteristicUuid(focusedComponent.characteristicUuid)
+      setSelectOptions(focusedComponent.selectProperties)
     }
   }, [JSON.stringify(focusedComponent)])
 
@@ -41,7 +43,7 @@ const AddSelectComponentModal = ({ component }) => {
     if (focusedComponent === null) {
       const newComponent = {
         id: nanoid(),
-        type: 'BUTTON',
+        type: 'SELECT',
         componentLabel,
         serviceUuid: serviceUuid.toLowerCase(),
         characteristicUuid: characteristicUuid.toLowerCase(),
@@ -49,17 +51,15 @@ const AddSelectComponentModal = ({ component }) => {
           state: 'DISCONNECTED',
           gattService: null,
           gattCharacteristic: null
-        }
-        // buttonProperties: {
-        //   valueToWrite
-        // }
+        },
+        selectProperties: selectOptions
       }
       addComponent(newComponent)
     } else {
       focusedComponent.componentLabel = componentLabel
       focusedComponent.serviceUuid = serviceUuid.toLowerCase()
       focusedComponent.characteristicUuid = characteristicUuid.toLowerCase()
-      //   focusedComponent.buttonProperties.valueToWrite = valueToWrite
+      focusedComponent.selectProperties = selectOptions
       updateComponent(focusedComponent)
       setFocusedComponent(null)
     }
@@ -105,7 +105,7 @@ const AddSelectComponentModal = ({ component }) => {
           onChange={e => setNewSelectOption(prev => ({ ...prev, label: e.target.value }))}
           value={newSelectOption.label}
         />
-        <TextInput
+        <NumberInput
           label='Value'
           placeholder='1'
           onChange={e => setNewSelectOption(prev => ({ ...prev, value: e.target.value }))}
@@ -162,7 +162,7 @@ const AddSelectComponentModal = ({ component }) => {
           onClick={handleAddComponent}
           disabled={missingUuid || selectOptions.length === 0}
         >
-          {focusedComponent === null ? 'Add slider' : 'Update slider'}
+          {focusedComponent === null ? 'Add' : 'Update'}
         </SolidButton>
       </ModalButtonContainer>
     </ModalContainer>
