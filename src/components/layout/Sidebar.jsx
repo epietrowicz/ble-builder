@@ -3,6 +3,7 @@ import ComponentCard from '../ui/ComponentCard'
 
 import {
   AreaChart,
+  ListChecksIcon,
   MousePointerClick,
   Palette,
   SlidersHorizontal,
@@ -11,39 +12,46 @@ import {
 
 const componentOptions = [
   {
-    id: 1,
+    id: 692271,
     type: 'SLIDER',
     title: 'Slider',
     description: 'Listen for or write incremental updates',
     icon: (<SlidersHorizontal />)
   },
   {
-    id: 2,
+    id: 82048,
     type: 'BUTTON',
     title: 'Button',
     description: 'Send a payload',
     icon: (<MousePointerClick />)
   },
   {
-    id: 3,
-    type: 'COLOR_PICKER',
-    title: 'Color Picker',
-    description: 'Send a color value',
-    icon: (<Palette />)
-  },
-  {
-    id: 4,
+    id: 237618,
     type: 'TOGGLE',
     title: 'Toggle',
     description: 'Listen for or send a status change',
     icon: (<ToggleLeft />)
   },
   {
-    id: 5,
+    id: 731891,
+    type: 'SELECT',
+    title: 'Select',
+    description: 'Listen for or send a payload from a range of options',
+    icon: (<ListChecksIcon />)
+  },
+  {
+    id: 755125,
     type: 'CHART',
     title: 'Chart',
     description: 'Graph changing values over time',
     icon: (<AreaChart />)
+  },
+  {
+    id: 748389,
+    type: 'COLOR_PICKER',
+    title: 'Color Picker',
+    description: 'Send a color value',
+    icon: (<Palette />)
   }
 ]
 

@@ -3,7 +3,7 @@ import React from 'react'
 const CharacteristicProperties = ({ isRead = false, isWrite = false, isNotify = false }) => {
   return (
     <div>
-      <span className='text-lg font-semibold'>Available slider properties</span>
+      <span className='text-lg font-semibold'>Available properties for this component</span>
       <ul className='flex flex-col space-y-2 mt-2'>
         {isRead && (
           <li>

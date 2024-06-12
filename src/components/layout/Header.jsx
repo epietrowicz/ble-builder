@@ -37,7 +37,6 @@ const Header = () => {
             <>
               <SolidButton disabled>
                 <BluetoothIcon className='md:mr-2' />
-                {/* Connecting... */}
                 <span className='hidden md:block'>Connecting</span>
               </SolidButton>
             </>
@@ -46,7 +45,6 @@ const Header = () => {
             <>
               <SolidButton onClick={disconnectDevice}>
                 <BluetoothOff className='md:mr-2' />
-                {/* Disconnect */}
                 <span className='hidden md:block'>Disconnect</span>
               </SolidButton>
             </>
