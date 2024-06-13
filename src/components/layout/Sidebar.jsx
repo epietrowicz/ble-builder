@@ -57,7 +57,7 @@ const componentOptions = [
 
 const Sidebar = () => {
   return (
-    <div className='w-1/3 max-w-56 border-r p-4 min-h-screen flex flex-col space-y-4'>
+    <div className='w-[37%] max-w-56 border-r p-4 min-h-screen flex flex-col space-y-4'>
       {componentOptions.map((component) => (
         <ComponentCard key={component.type} component={component} />
       ))}

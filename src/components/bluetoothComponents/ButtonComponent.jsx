@@ -32,7 +32,8 @@ const ButtonComponent = ({ component }) => {
         disabled={buttonDisabled}
         additionalClasses='w-full flex items-center justify-center'
       >
-        <CloudUpload className='h-5 w-5' />
+        {component.buttonProperties.buttonLabel ?? 'Button'}
+        {/* <CloudUpload className='h-5 w-5' /> */}
       </SolidButton>
     </BluetoothComponentContainer>
   )

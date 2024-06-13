@@ -27,12 +27,16 @@ const CallToAction = () => {
         <iframe className='w-full' src='https://ericpietrowicz.substack.com/embed' frameborder='0' />
       </div>
       )
-    : (
-      <div className='absolute bottom-0 right-0 p-4 m-4'>
-        <button onClick={() => setCtaOpen(true)}>
-          <MessageSquareIcon className='w-6 h-6' />
-        </button>
-      </div>)
+    : !error
+        ? (
+
+          <div className='absolute bottom-0 right-0 p-4 m-4'>
+            <button onClick={() => setCtaOpen(true)}>
+              <MessageSquareIcon className='w-6 h-6' />
+            </button>
+          </div>
+          )
+        : <></>
 }
 
 export default CallToAction

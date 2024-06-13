@@ -18,6 +18,7 @@ const AddButtonComponentModal = () => {
   const [characteristicUuid, setCharacteristicUuid] = useState('')
 
   const [valueToWrite, setValueToWrite] = useState(0)
+  const [buttonLabel, setButtonLabel] = useState('')
 
   const missingUuid = serviceUuid === '' || characteristicUuid === '' || componentLabel === ''
 
@@ -26,6 +27,7 @@ const AddButtonComponentModal = () => {
       setComponentLabel(focusedComponent.componentLabel)
       setServiceUuid(focusedComponent.serviceUuid)
       setCharacteristicUuid(focusedComponent.characteristicUuid)
+      setButtonLabel(focusedComponent.buttonProperties.buttonLabel)
     }
   }, [JSON.stringify(focusedComponent)])
 
@@ -49,7 +51,8 @@ const AddButtonComponentModal = () => {
           gattCharacteristic: null
         },
         buttonProperties: {
-          valueToWrite
+          valueToWrite,
+          buttonLabel
         }
       }
       addComponent(newComponent)
@@ -58,6 +61,7 @@ const AddButtonComponentModal = () => {
       focusedComponent.serviceUuid = serviceUuid.toLowerCase()
       focusedComponent.characteristicUuid = characteristicUuid.toLowerCase()
       focusedComponent.buttonProperties.valueToWrite = valueToWrite
+      focusedComponent.buttonProperties.buttonLabel = buttonLabel
       updateComponent(focusedComponent)
       setFocusedComponent(null)
     }
@@ -96,9 +100,17 @@ const AddButtonComponentModal = () => {
         onChange={e => setCharacteristicUuid(e.target.value)}
       />
 
+      <TextInput
+        label='Label'
+        placeholder='Button'
+        additionalClasses='mt-4'
+        value={buttonLabel}
+        onChange={e => setButtonLabel(e.target.value)}
+      />
+
       <div className='mt-4'>
         <NumberInput
-          label='Value to Write'
+          label='Value'
           value={valueToWrite}
           onChange={e => setValueToWrite(e.target.value)}
         />
