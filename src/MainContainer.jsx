@@ -11,6 +11,8 @@ import ComingSoonModal from './components/modals/ComingSoonModal'
 import { track } from './lib/mixpanel'
 import AddSelectComponentModal from './components/modals/AddSelectComponentModal'
 import SelectComponent from './components/bluetoothComponents/SelectComponent'
+import AddTextComponentModal from './components/modals/AddTextComponentModal'
+import TextComponent from './components/bluetoothComponents/TextComponent'
 
 const MainContainer = () => {
   const [isActive, setIsActive] = useState(false)
@@ -40,6 +42,8 @@ const MainContainer = () => {
       document.getElementById('add_toggle_component_modal').showModal()
     } else if (componentType === 'SELECT') {
       document.getElementById('add_select_component_modal').showModal()
+    } else if (componentType === 'TEXT') {
+      document.getElementById('add_text_component_modal').showModal()
     } else {
       document.getElementById('coming_soon_modal').showModal()
     }
@@ -55,6 +59,8 @@ const MainContainer = () => {
         return (<ToggleComponent key={component.id} component={component} />)
       case 'SELECT':
         return (<SelectComponent key={component.id} component={component} />)
+      case 'TEXT':
+        return (<TextComponent key={component.id} component={component} />)
     }
   }
 
@@ -64,6 +70,7 @@ const MainContainer = () => {
       <AddButtonComponentModal />
       <AddToggleComponentModal />
       <AddSelectComponentModal />
+      <AddTextComponentModal />
       <ComingSoonModal />
       <div
         onDragOver={handleDragOver}
