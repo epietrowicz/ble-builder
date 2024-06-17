@@ -47,6 +47,13 @@ export const BluetoothProvider = ({ children }) => {
     setConnectionState('DISCONNECTED')
   }
 
+  const parseUUID = (uuid) => {
+    if (uuid.length === 4 || uuid.startsWith('0x')) {
+      return parseInt(uuid, 16)
+    }
+    return uuid.toLowerCase()
+  }
+
   const { propertyTree, uniqueServices } = useMemo(() => {
     const propertyTree = {}
     for (const component of components) {
@@ -58,35 +65,53 @@ export const BluetoothProvider = ({ children }) => {
     return { propertyTree, uniqueServices: Object.keys(propertyTree) }
   }, [JSON.stringify(components)])
 
-  const parseCharacteristics = async (server) => {
-    const remoteGattServices = []
-    for (const serviceId of uniqueServices) {
-      try {
-        const gattService = await server.getPrimaryService(serviceId)
-        const relevantComponent = components.find(c => c.serviceUuid === serviceId)
-        relevantComponent.bluetoothProperties.gattService = gattService
-        updateComponent(relevantComponent)
-        remoteGattServices.push(gattService)
-      } catch (e) {
-        const relevantComponent = components.find(c => c.serviceUuid === serviceId)
-        relevantComponent.bluetoothProperties.state = 'SERVICE_NOT_FOUND'
-        updateComponent(relevantComponent)
-      }
+  const updateComponentService = async (server, serviceId) => {
+    const relevantComponent = components.find(c => c.serviceUuid === serviceId)
+    if (relevantComponent === undefined) {
+      setError(new Error(`Component not found with the service UUID: ${serviceId}`))
+      return
     }
-    for (const remoteGattService of remoteGattServices) {
-      const characteristicsIds = propertyTree[remoteGattService.uuid]
+
+    try {
+      const gattService = await server.getPrimaryService(parseUUID(serviceId))
+      relevantComponent.bluetoothProperties.gattService = gattService
+      updateComponent(relevantComponent)
+      return gattService
+    } catch (e) {
+      relevantComponent.bluetoothProperties.state = 'SERVICE_NOT_FOUND'
+      setError(e)
+      updateComponent(relevantComponent)
+    }
+  }
+
+  const updateComponentCharacteristic = async (remoteGattService, characteristicId) => {
+    const relevantComponent = components.find(c => c.characteristicUuid === characteristicId)
+    if (relevantComponent === undefined) {
+      setError(new Error(`Component not found with the characteristic UUID: ${characteristicId}`))
+      return
+    }
+    try {
+      const remoteGattCharacteristic = await remoteGattService.getCharacteristic(parseUUID(characteristicId))
+
+      relevantComponent.bluetoothProperties.state = 'CONNECTED'
+      relevantComponent.bluetoothProperties.gattCharacteristic = remoteGattCharacteristic
+      updateComponent(relevantComponent)
+    } catch (e) {
+      relevantComponent.bluetoothProperties.state = 'CHARACTERISTIC_NOT_FOUND'
+      updateComponent(relevantComponent)
+      setError(e)
+    }
+  }
+
+  const parseCharacteristics = async (server) => {
+    for (const serviceId of uniqueServices) {
+      const remoteGattService = await updateComponentService(server, serviceId)
+      if (remoteGattService === undefined) {
+        continue
+      }
+      const characteristicsIds = propertyTree[serviceId]
       for (const characteristicId of characteristicsIds) {
-        try {
-          const remoteGattCharacteristic = await remoteGattService.getCharacteristic(characteristicId)
-          const relevantComponent = components.find(c => c.characteristicUuid === characteristicId)
-          relevantComponent.bluetoothProperties.state = 'CONNECTED'
-          relevantComponent.bluetoothProperties.gattCharacteristic = remoteGattCharacteristic
-          updateComponent(relevantComponent)
-        } catch (e) {
-          const relevantComponent = components.find(c => c.characteristicUuid === characteristicId)
-          relevantComponent.bluetoothProperties.state = 'CHARACTERISTIC_NOT_FOUND'
-          updateComponent(relevantComponent)
-        }
+        updateComponentCharacteristic(remoteGattService, characteristicId)
       }
     }
   }
@@ -94,7 +119,7 @@ export const BluetoothProvider = ({ children }) => {
   const connectToDevice = async () => {
     setConnectionState('CONNECTING')
     try {
-      let connectionParams = { optionalServices: uniqueServices }
+      let connectionParams = { optionalServices: uniqueServices.map(s => parseUUID(s)) }
       if (scanFilter === '') {
         connectionParams = { ...connectionParams, acceptAllDevices: true }
       } else {

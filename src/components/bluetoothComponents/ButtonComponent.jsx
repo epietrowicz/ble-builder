@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useComponents } from '../../hooks/useComponents'
 import SolidButton from '../ui/SolidButton'
 import BluetoothComponentContainer from './BluetoothComponentContainer'
-import { CloudUpload } from 'lucide-react'
 import { writeToCharacteristic } from '../../lib/bleUtils'
 
 const ButtonComponent = ({ component }) => {
