@@ -1,6 +1,5 @@
 import React, { useState, useContext, createContext, useEffect, useMemo } from 'react'
 import { useComponents } from './useComponents'
-import { parse } from 'postcss'
 
 const BluetoothContext = createContext()
 
@@ -69,7 +68,8 @@ export const BluetoothProvider = ({ children }) => {
   const updateComponentService = async (server, serviceId) => {
     const relevantComponent = components.find(c => c.serviceUuid === serviceId)
     if (relevantComponent === undefined) {
-      setError(new Error(`Component not found with the service id: ${serviceId}`))
+      setError(new Error(`Component not found with the service UUID: ${serviceId}`))
+      return
     }
 
     try {
@@ -87,7 +87,7 @@ export const BluetoothProvider = ({ children }) => {
   const updateComponentCharacteristic = async (remoteGattService, characteristicId) => {
     const relevantComponent = components.find(c => c.characteristicUuid === characteristicId)
     if (relevantComponent === undefined) {
-      setError(new Error(`Component not found with the characteristic id: ${characteristicId}`))
+      setError(new Error(`Component not found with the characteristic UUID: ${characteristicId}`))
       return
     }
     try {
@@ -106,9 +106,12 @@ export const BluetoothProvider = ({ children }) => {
   const parseCharacteristics = async (server) => {
     for (const serviceId of uniqueServices) {
       const remoteGattService = await updateComponentService(server, serviceId)
+      if (remoteGattService === undefined) {
+        continue
+      }
       const characteristicsIds = propertyTree[serviceId]
       for (const characteristicId of characteristicsIds) {
-        updateComponentCharacteristic(server, characteristicId)
+        updateComponentCharacteristic(remoteGattService, characteristicId)
       }
     }
   }

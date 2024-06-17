@@ -24,29 +24,21 @@ const BluetoothComponentContainer = ({ children, component, onEdit, handleReadVa
 
   const componentStateBadge = useMemo(() => {
     switch (state) {
-      case 'DISCONNECTED':
-        return (
-          <span className={`bg-gray-100 text-gray-800 ${badgeBaseClasses}`}>
-            Disconnected
-          </span>
-        )
-      case 'CONNECTED':
-        return (
-          <span className={`bg-green-100 text-green-800 ${badgeBaseClasses}`}>
-            Connected
-          </span>
-        )
       case 'CHARACTERISTIC_NOT_FOUND':
         return (
           <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
             Characteristic not found
           </span>
         )
-      default:
+      case 'SERVICE_NOT_FOUND':
         return (
           <span className={`bg-red-100 text-red-800 ${badgeBaseClasses}`}>
             Service not found
           </span>
+        )
+      default:
+        return (
+          <></>
         )
     }
   }, [JSON.stringify(component)])
