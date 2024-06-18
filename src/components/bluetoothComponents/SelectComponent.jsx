@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useComponents } from '../../hooks/useComponents'
 import BluetoothComponentContainer from './BluetoothComponentContainer'
-import { ChevronDownIcon } from 'lucide-react'
-import { parseIncomingValue, writeToCharacteristic } from '../../lib/bleUtils'
+import { numberToUint8Array, parseIncomingValue, writeToCharacteristic } from '../../lib/bleUtils'
 import useIncomingBluetoothData from '../../hooks/useIncomingBluetoothData'
 import { useBluetooth } from '../../hooks/useBluetooth'
+import StyledSelect from '../ui/StyledSelect'
 
 const SelectComponent = ({ component }) => {
   const { setFocusedComponent } = useComponents()
@@ -15,7 +15,6 @@ const SelectComponent = ({ component }) => {
   const updateValue = (result) => {
     const parsedValue = parseIncomingValue(result)
     const incoming = component.selectProperties.find(option => parseInt(option.value) === parsedValue) ?? null
-    console.log(incoming)
     if (incoming !== null) {
       setSelectOption(incoming.value)
     } else {
@@ -48,7 +47,7 @@ const SelectComponent = ({ component }) => {
   const handleChange = async (e) => {
     const valueToWrite = e.target.value
     setSelectOption(valueToWrite)
-    const encodedValue = new Uint8Array([valueToWrite])
+    const encodedValue = numberToUint8Array(valueToWrite)
     await writeToCharacteristic(encodedValue, characteristic)
   }
 
@@ -65,30 +64,11 @@ const SelectComponent = ({ component }) => {
       onEdit={handleEditComponent}
       handleReadValue={handleReadValue}
     >
-      <div className='relative'>
-        <select
-          className='px-3 py-2 border w-full appearance-none hover:cursor-pointer'
-          value={selectedOption}
-          onChange={handleChange}
-        >
-          {component.selectProperties.map(option => (
-            <option key={option.id} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-
-        </select>
-        <div className='absolute top-1/2 -translate-y-1/2 right-3'>
-          <ChevronDownIcon className='h-4 w-4 text-gray-500' />
-        </div>
-      </div>
-      {/* <SolidButton
-        onClick={onClick}
-        disabled={buttonDisabled}
-        additionalClasses='w-full flex items-center justify-center'
-      >
-        <CloudUpload className='h-5 w-5' />
-      </SolidButton> */}
+      <StyledSelect
+        value={selectedOption}
+        onChange={handleChange}
+        options={component.selectProperties}
+      />
     </BluetoothComponentContainer>
   )
 }

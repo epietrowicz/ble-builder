@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import BluetoothComponentContainer from './BluetoothComponentContainer'
 import { useComponents } from '../../hooks/useComponents'
-import { parseIncomingValue, writeToCharacteristic } from '../../lib/bleUtils'
+import { numberToUint8Array, parseIncomingValue, writeToCharacteristic } from '../../lib/bleUtils'
 import useIncomingBluetoothData from '../../hooks/useIncomingBluetoothData'
 
 const SliderComponent = ({ component }) => {
@@ -30,7 +30,7 @@ const SliderComponent = ({ component }) => {
   const handleValueChange = async (e) => {
     const value = e.target.value
     setSliderValue(value)
-    const encodedValue = new Uint8Array([value])
+    const encodedValue = numberToUint8Array(value)
     await writeToCharacteristic(encodedValue, characteristic)
   }
 

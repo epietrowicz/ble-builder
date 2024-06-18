@@ -2,7 +2,7 @@ import React from 'react'
 import { useComponents } from '../../hooks/useComponents'
 import SolidButton from '../ui/SolidButton'
 import BluetoothComponentContainer from './BluetoothComponentContainer'
-import { writeToCharacteristic } from '../../lib/bleUtils'
+import { numberToUint8Array, writeToCharacteristic } from '../../lib/bleUtils'
 
 const ButtonComponent = ({ component }) => {
   const { setFocusedComponent } = useComponents()
@@ -17,9 +17,13 @@ const ButtonComponent = ({ component }) => {
 
   const onClick = async () => {
     const valueToWrite = component.buttonProperties.valueToWrite
-    const encodedValue = new Uint8Array([valueToWrite])
+    const encodedValue = numberToUint8Array(valueToWrite)
     await writeToCharacteristic(encodedValue, characteristic)
   }
+
+  const btnLabel = component?.buttonProperties?.buttonLabel === ''
+    ? 'Send'
+    : component?.buttonProperties?.buttonLabel
 
   return (
     <BluetoothComponentContainer
@@ -31,8 +35,7 @@ const ButtonComponent = ({ component }) => {
         disabled={buttonDisabled}
         additionalClasses='w-full flex items-center justify-center'
       >
-        {component.buttonProperties.buttonLabel ?? 'Button'}
-        {/* <CloudUpload className='h-5 w-5' /> */}
+        {btnLabel}
       </SolidButton>
     </BluetoothComponentContainer>
   )

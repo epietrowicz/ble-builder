@@ -22,3 +22,12 @@ export const writeToCharacteristic = async (encodedValue, characteristic) => {
     console.log(e)
   }
 }
+
+export const numberToUint8Array = (number) => {
+  let binaryStr = number.toString(2)
+  while (binaryStr.length % 8 !== 0) {
+    binaryStr = '0' + binaryStr
+  }
+  const bytes = binaryStr.match(/.{1,8}/g)
+  return new Uint8Array(bytes.map(byte => parseInt(byte, 2)))
+}

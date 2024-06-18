@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import BluetoothComponentContainer from './BluetoothComponentContainer'
 import { useComponents } from '../../hooks/useComponents'
-import { parseIncomingValue, writeToCharacteristic } from '../../lib/bleUtils'
+import { numberToUint8Array, parseIncomingValue, writeToCharacteristic } from '../../lib/bleUtils'
 import useIncomingBluetoothData from '../../hooks/useIncomingBluetoothData'
 
 const ToggleComponent = ({ component }) => {
@@ -38,8 +38,8 @@ const ToggleComponent = ({ component }) => {
 
   const handleValueChange = async () => {
     const encodedValue = toggleValue
-      ? new Uint8Array([component.toggleProperties.offValue])
-      : new Uint8Array([component.toggleProperties.onValue])
+      ? numberToUint8Array(component.toggleProperties.offValue)
+      : numberToUint8Array(component.toggleProperties.onValue)
     setToggleValue(!toggleValue)
     await writeToCharacteristic(encodedValue, characteristic)
   }

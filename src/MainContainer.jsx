@@ -13,6 +13,8 @@ import AddSelectComponentModal from './components/modals/AddSelectComponentModal
 import SelectComponent from './components/bluetoothComponents/SelectComponent'
 import AddTextComponentModal from './components/modals/AddTextComponentModal'
 import TextComponent from './components/bluetoothComponents/TextComponent'
+import AddRawComponentModal from './components/modals/AddRawComponentModal'
+import RawValueComponent from './components/bluetoothComponents/RawValueComponent'
 
 const MainContainer = () => {
   const [isActive, setIsActive] = useState(false)
@@ -44,6 +46,8 @@ const MainContainer = () => {
       document.getElementById('add_select_component_modal').showModal()
     } else if (componentType === 'TEXT') {
       document.getElementById('add_text_component_modal').showModal()
+    } else if (componentType === 'RAW') {
+      document.getElementById('add_raw_component_modal').showModal()
     } else {
       document.getElementById('coming_soon_modal').showModal()
     }
@@ -61,6 +65,8 @@ const MainContainer = () => {
         return (<SelectComponent key={component.id} component={component} />)
       case 'TEXT':
         return (<TextComponent key={component.id} component={component} />)
+      case 'RAW':
+        return (<RawValueComponent key={component.id} component={component} />)
     }
   }
 
@@ -71,6 +77,7 @@ const MainContainer = () => {
       <AddToggleComponentModal />
       <AddSelectComponentModal />
       <AddTextComponentModal />
+      <AddRawComponentModal />
       <ComingSoonModal />
       <div
         onDragOver={handleDragOver}

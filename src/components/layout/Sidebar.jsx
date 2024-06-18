@@ -43,6 +43,12 @@ const componentOptions = [
     icon: (<ListChecksIcon />)
   },
   {
+    type: 'RAW',
+    title: 'Raw Value',
+    description: 'Send a raw (hexadecimal, binary, or decimal) value to your device',
+    icon: (<ListChecksIcon />)
+  },
+  {
     type: 'CHART',
     title: 'Chart',
     description: 'Graph changing values over time',

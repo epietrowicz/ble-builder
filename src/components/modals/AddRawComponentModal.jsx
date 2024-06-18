@@ -3,27 +3,25 @@ import { useComponents } from '../../hooks/useComponents'
 import OutlineButton from '../ui/OutlineButton'
 import SolidButton from '../ui/SolidButton'
 import TextInput from '../ui/TextInput'
-import NumberInput from '../ui/NumberInput'
 import ModalContainer from './ModalContainer'
 import ModalButtonContainer from './ModalButtonContainer'
 import { nanoid } from 'nanoid'
 import { track } from '../../lib/mixpanel'
 import CharacteristicProperties from '../ui/CharacteristicProperties'
 
-const AddButtonComponentModal = () => {
+const AddRawComponentModal = () => {
   const { addComponent, focusedComponent, setFocusedComponent, updateComponent } = useComponents()
 
   const [componentLabel, setComponentLabel] = useState('')
   const [serviceUuid, setServiceUuid] = useState('')
   const [characteristicUuid, setCharacteristicUuid] = useState('')
 
-  const [valueToWrite, setValueToWrite] = useState(0)
   const [buttonLabel, setButtonLabel] = useState('')
 
   const missingUuid = serviceUuid === '' || characteristicUuid === '' || componentLabel === ''
 
   useEffect(() => {
-    if (focusedComponent !== null && focusedComponent.type === 'BUTTON') {
+    if (focusedComponent !== null && focusedComponent.type === 'RAW') {
       setComponentLabel(focusedComponent.componentLabel)
       setServiceUuid(focusedComponent.serviceUuid)
       setCharacteristicUuid(focusedComponent.characteristicUuid)
@@ -42,7 +40,7 @@ const AddButtonComponentModal = () => {
     if (focusedComponent === null) {
       const newComponent = {
         id: nanoid(),
-        type: 'BUTTON',
+        type: 'RAW',
         componentLabel,
         serviceUuid: serviceUuid.toLowerCase(),
         characteristicUuid: characteristicUuid.toLowerCase(),
@@ -52,7 +50,6 @@ const AddButtonComponentModal = () => {
           gattCharacteristic: null
         },
         buttonProperties: {
-          valueToWrite,
           buttonLabel
         }
       }
@@ -61,25 +58,24 @@ const AddButtonComponentModal = () => {
       focusedComponent.componentLabel = componentLabel
       focusedComponent.serviceUuid = serviceUuid.toLowerCase()
       focusedComponent.characteristicUuid = characteristicUuid.toLowerCase()
-      focusedComponent.buttonProperties.valueToWrite = valueToWrite
       focusedComponent.buttonProperties.buttonLabel = buttonLabel
       updateComponent(focusedComponent)
       setFocusedComponent(null)
     }
-    document.getElementById('add_button_component_modal').close()
+    document.getElementById('add_raw_component_modal').close()
     resetState()
-    track('Added button | BLE Builder')
+    track('Added raw | BLE Builder')
   }
 
   const handleCancel = () => {
-    document.getElementById('add_button_component_modal').close()
+    document.getElementById('add_raw_component_modal').close()
     setFocusedComponent(null)
     resetState()
-    track('Canceled button | BLE Builder')
+    track('Canceled raw | BLE Builder')
   }
 
   return (
-    <ModalContainer modalId='add_button_component_modal' modalTitle='Configure Button Component'>
+    <ModalContainer modalId='add_raw_component_modal' modalTitle='Configure Raw Value Component'>
       <TextInput
         label='Component label'
         placeholder='My component'
@@ -109,14 +105,6 @@ const AddButtonComponentModal = () => {
         onChange={e => setButtonLabel(e.target.value)}
       />
 
-      <div className='mt-4'>
-        <NumberInput
-          label='Value'
-          value={valueToWrite}
-          onChange={e => setValueToWrite(e.target.value)}
-        />
-      </div>
-
       <div className='mt-6'>
         <CharacteristicProperties isWrite />
       </div>
@@ -139,4 +127,4 @@ const AddButtonComponentModal = () => {
   )
 }
 
-export default AddButtonComponentModal
+export default AddRawComponentModal
