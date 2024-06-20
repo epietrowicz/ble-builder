@@ -3,21 +3,22 @@ import ComponentCard from '../ui/ComponentCard'
 
 import {
   AreaChart,
+  BinaryIcon,
   ListChecksIcon,
   MousePointerClick,
   Palette,
   SlidersHorizontal,
-  ToggleLeft,
-  TypeIcon
+  ToggleLeft
+  // TypeIcon
 } from 'lucide-react'
 
 const componentOptions = [
-  {
-    type: 'TEXT',
-    title: 'Text value',
-    description: 'Display a reading from your device',
-    icon: (<TypeIcon />)
-  },
+  // {
+  //   type: 'TEXT',
+  //   title: 'Text value',
+  //   description: 'Display a reading from your device',
+  //   icon: (<TypeIcon />)
+  // },
   {
     type: 'SLIDER',
     title: 'Slider',
@@ -45,8 +46,8 @@ const componentOptions = [
   {
     type: 'RAW',
     title: 'Raw Value',
-    description: 'Send a raw (hexadecimal, binary, or decimal) value to your device',
-    icon: (<ListChecksIcon />)
+    description: 'Send or receive a raw (hexadecimal, binary, or decimal) value to your device',
+    icon: (<BinaryIcon />)
   },
   {
     type: 'CHART',

@@ -106,7 +106,7 @@ const AddRawComponentModal = () => {
       />
 
       <div className='mt-6'>
-        <CharacteristicProperties isWrite />
+        <CharacteristicProperties isWrite isNotify isRead />
       </div>
 
       <ModalButtonContainer>
